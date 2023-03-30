@@ -54,26 +54,78 @@ int DrawGLScene(GLvoid)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	glTranslatef(-2.0f, 0.0f, -6.0f);
-	glRotatef(rT, 0.0f, 1.0f, 0.0f); // 108.4349488229f - Õ≈ ¬»ƒ»Ã “≈–”√ŒÀ‹Õ» 
+	glRotatef(rT, 0.0f, 1.0f, 0.0f);
 	rT += 0.1f;
 	glBegin(GL_TRIANGLES);
 		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, 0.0f);
+		glVertex3f(-1.0f, -0.57735026919f, 0.57735026919f);
 		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, 0.0f);
+		glVertex3f(1.0f, -0.57735026919f, 0.57735026919f);
 		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.0f, 1.15470053838f, 0.0f);
+
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-1.0f, -0.57735026919f, 0.57735026919f);
+		glColor3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(0.0f, -0.57735026919f, -1.15470053838f);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 1.15470053838f, 0.0f);
+
+		glColor3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(0.0f, -0.57735026919f, -1.15470053838f);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(1.0f, -0.57735026919f, 0.57735026919f);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 1.15470053838f, 0.0f);
+
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-1.0f, -0.57735026919f, 0.57735026919f);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(1.0f, -0.57735026919f, 0.57735026919f);
+		glColor3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(0.0f, -0.57735026919f, -1.15470053838f);
 	glEnd();
 	glLoadIdentity();
-	glTranslatef(2.0f, 0.0f, -6.0f);
-	glRotatef(rQ, 1.0f, 1.0f, 0.0f);
+	glTranslatef(1.0f, 0.0f, -6.0f);
+	glRotatef(rQ, 1.0f, 1.0f, 1.0f);
 	rQ += 0.05f;
 	glColor3f(0.5f, 0.5f, 0.5f);
 	glBegin(GL_QUADS);
-		glVertex3f(-1.0f, -1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, 0.0f);
-		glVertex3f(1.0f, 1.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, 0.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);              
+		glVertex3f(1.0f, 1.0f, -1.0f);          
+		glVertex3f(-1.0f, 1.0f, -1.0f);          
+		glVertex3f(-1.0f, 1.0f, 1.0f);          
+		glVertex3f(1.0f, 1.0f, 1.0f); 
+
+		glColor3f(1.0f, 0.5f, 0.0f);              
+		glVertex3f(1.0f, -1.0f, 1.0f);          
+		glVertex3f(-1.0f, -1.0f, 1.0f);          
+		glVertex3f(-1.0f, -1.0f, -1.0f);          
+		glVertex3f(1.0f, -1.0f, -1.0f); 
+
+		glColor3f(1.0f, 0.0f, 0.0f);              
+		glVertex3f(1.0f, 1.0f, 1.0f);          
+		glVertex3f(-1.0f, 1.0f, 1.0f);          
+		glVertex3f(-1.0f, -1.0f, 1.0f);          
+		glVertex3f(1.0f, -1.0f, 1.0f); 
+
+		glColor3f(1.0f, 1.0f, 0.0f);              
+		glVertex3f(1.0f, -1.0f, -1.0f);          
+		glVertex3f(-1.0f, -1.0f, -1.0f);          
+		glVertex3f(-1.0f, 1.0f, -1.0f);          
+		glVertex3f(1.0f, 1.0f, -1.0f); 
+
+		glColor3f(0.0f, 0.0f, 1.0f);              
+		glVertex3f(-1.0f, 1.0f, 1.0f);          
+		glVertex3f(-1.0f, 1.0f, -1.0f);          
+		glVertex3f(-1.0f, -1.0f, -1.0f);          
+		glVertex3f(-1.0f, -1.0f, 1.0f); 
+
+		glColor3f(1.0f, 0.0f, 1.0f);              
+		glVertex3f(1.0f, 1.0f, -1.0f);          
+		glVertex3f(1.0f, 1.0f, 1.0f);          
+		glVertex3f(1.0f, -1.0f, 1.0f);          
+		glVertex3f(1.0f, -1.0f, -1.0f);          
 	glEnd();
 	return TRUE;
 }
@@ -333,6 +385,9 @@ LRESULT CALLBACK WndProc(HWND	hWnd,
 		case WM_SIZE:
 		{
 			ReSizeGLScene(LOWORD(lParam), HIWORD(lParam));
+
+			if (DrawGLScene())
+				SwapBuffers(hDC);
 			return 0;
 		}
 	}
