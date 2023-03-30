@@ -10,6 +10,9 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="WindowGL.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>Project</ProjectName>
     <ProjectGuid>{A4589AD8-1773-44ED-A147-B13335D31DD5}</ProjectGuid>
