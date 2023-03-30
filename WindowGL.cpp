@@ -29,7 +29,6 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-
 	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -49,8 +48,33 @@ int InitGL(GLvoid)
 
 int DrawGLScene(GLvoid)
 {
+	static GLfloat rT = 0.0f;
+	static GLfloat rQ = 0.0f;
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	glTranslatef(-2.0f, 0.0f, -6.0f);
+	glRotatef(rT, 0.0f, 1.0f, 0.0f); // 108.4349488229f - Õ≈ ¬»ƒ»Ã “≈–”√ŒÀ‹Õ» 
+	rT += 0.1f;
+	glBegin(GL_TRIANGLES);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(1.0f, -1.0f, 0.0f);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 1.0f, 0.0f);
+	glEnd();
+	glLoadIdentity();
+	glTranslatef(2.0f, 0.0f, -6.0f);
+	glRotatef(rQ, 1.0f, 1.0f, 0.0f);
+	rQ += 0.05f;
+	glColor3f(0.5f, 0.5f, 0.5f);
+	glBegin(GL_QUADS);
+		glVertex3f(-1.0f, -1.0f, 0.0f);
+		glVertex3f(1.0f, -1.0f, 0.0f);
+		glVertex3f(1.0f, 1.0f, 0.0f);
+		glVertex3f(-1.0f, 1.0f, 0.0f);
+	glEnd();
 	return TRUE;
 }
 
@@ -267,50 +291,50 @@ LRESULT CALLBACK WndProc(HWND	hWnd,
 {
 	switch (uMsg)
 	{
-	case WM_ACTIVATE:
-	{
-		if ((LOWORD(wParam) != WA_INACTIVE) && !((BOOL)HIWORD(wParam)))
-			active = TRUE;
-		else
-			active = FALSE;
-
-		return 0;
-	}
-
-	case WM_SYSCOMMAND:
-	{
-		switch (wParam)
+		case WM_ACTIVATE:
 		{
-		case SC_SCREENSAVE:
-		case SC_MONITORPOWER:
+			if ((LOWORD(wParam) != WA_INACTIVE) && !((BOOL)HIWORD(wParam)))
+				active = TRUE;
+			else
+				active = FALSE;
+
 			return 0;
 		}
-		break;
-	}
 
-	case WM_CLOSE:
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
+		case WM_SYSCOMMAND:
+		{
+			switch (wParam)
+			{
+			case SC_SCREENSAVE:
+			case SC_MONITORPOWER:
+				return 0;
+			}
+			break;
+		}
 
-	case WM_KEYDOWN:
-	{
-		keys[wParam] = TRUE;
-		return 0;
-	}
+		case WM_CLOSE:
+		{
+			PostQuitMessage(0);
+			return 0;
+		}
 
-	case WM_KEYUP:
-	{
-		keys[wParam] = FALSE;
-		return 0;
-	}
+		case WM_KEYDOWN:
+		{
+			keys[wParam] = TRUE;
+			return 0;
+		}
 
-	case WM_SIZE:
-	{
-		ReSizeGLScene(LOWORD(lParam), HIWORD(lParam));
-		return 0;
-	}
+		case WM_KEYUP:
+		{
+			keys[wParam] = FALSE;
+			return 0;
+		}
+
+		case WM_SIZE:
+		{
+			ReSizeGLScene(LOWORD(lParam), HIWORD(lParam));
+			return 0;
+		}
 	}
 
 
