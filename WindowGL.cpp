@@ -1,7 +1,9 @@
 #include <windows.h>		
-#include <gl\gl.h>			
-#include <gl\glu.h>			
-#include "gl\glaux.h"		
+#include <gl\gl.h>	
+#include <gl\glu.h>
+#include "gl\glaux.h"
+
+#pragma comment (lib, "legacy_stdio_definitions.lib")
 
 HDC			hDC = NULL;
 HGLRC		hRC = NULL;
@@ -11,9 +13,6 @@ HINSTANCE	hInstance;
 bool	keys[256];
 bool	active = TRUE;
 bool	fullscreen = TRUE;
-
-GLfloat	rtri;
-GLfloat	rquad;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -35,8 +34,25 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)
 	glLoadIdentity();
 }
 
+GLuint texture[1];
+
+GLvoid LoadGLTextures()
+{
+	AUX_RGBImageRec* texture1;
+	texture1 = auxDIBImageLoad("Data/CRATE.bmp");
+
+	glGenTextures(1, &texture[0]);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY, 0, 
+		GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
+}
+
 int InitGL(GLvoid)
 {
+	LoadGLTextures();
+	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClearDepth(1.0f);
@@ -48,84 +64,51 @@ int InitGL(GLvoid)
 
 int DrawGLScene(GLvoid)
 {
-	static GLfloat rT = 0.0f;
-	static GLfloat rQ = 0.0f;
+	static GLfloat xrot = 0.0f;
+	static GLfloat yrot = 0.0f;
+	static GLfloat zrot = 0.0f;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	glTranslatef(-2.0f, 0.0f, -6.0f);
-	glRotatef(rT, 0.0f, 1.0f, 0.0f);
-	rT += 0.1f;
-	glBegin(GL_TRIANGLES);
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(-1.0f, -0.57735026919f, 0.57735026919f);
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, -0.57735026919f, 0.57735026919f);
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(0.0f, 1.15470053838f, 0.0f);
-
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(-1.0f, -0.57735026919f, 0.57735026919f);
-		glColor3f(0.5f, 0.5f, 0.5f);
-		glVertex3f(0.0f, -0.57735026919f, -1.15470053838f);
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(0.0f, 1.15470053838f, 0.0f);
-
-		glColor3f(0.5f, 0.5f, 0.5f);
-		glVertex3f(0.0f, -0.57735026919f, -1.15470053838f);
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, -0.57735026919f, 0.57735026919f);
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(0.0f, 1.15470053838f, 0.0f);
-
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(-1.0f, -0.57735026919f, 0.57735026919f);
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, -0.57735026919f, 0.57735026919f);
-		glColor3f(0.5f, 0.5f, 0.5f);
-		glVertex3f(0.0f, -0.57735026919f, -1.15470053838f);
-	glEnd();
-	glLoadIdentity();
-	glTranslatef(1.0f, 0.0f, -6.0f);
-	glRotatef(rQ, 1.0f, 1.0f, 1.0f);
-	rQ += 0.05f;
-	glColor3f(0.5f, 0.5f, 0.5f);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glTranslatef(0.0f, 0.0f, -5.0f);
+	glRotatef(xrot, 1.0f, 0.0f, 0.0f);
+	xrot += 0.3f;
+	glRotatef(yrot, 0.0f, 1.0f, 0.0f);
+	yrot += 0.2f;
+	glRotatef(zrot, 0.0f, 0.0f, 1.0f);
+	zrot += 0.4f;
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glBegin(GL_QUADS);
-		glColor3f(0.0f, 1.0f, 0.0f);              
-		glVertex3f(1.0f, 1.0f, -1.0f);          
-		glVertex3f(-1.0f, 1.0f, -1.0f);          
-		glVertex3f(-1.0f, 1.0f, 1.0f);          
-		glVertex3f(1.0f, 1.0f, 1.0f); 
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
 
-		glColor3f(1.0f, 0.5f, 0.0f);              
-		glVertex3f(1.0f, -1.0f, 1.0f);          
-		glVertex3f(-1.0f, -1.0f, 1.0f);          
-		glVertex3f(-1.0f, -1.0f, -1.0f);          
-		glVertex3f(1.0f, -1.0f, -1.0f); 
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
 
-		glColor3f(1.0f, 0.0f, 0.0f);              
-		glVertex3f(1.0f, 1.0f, 1.0f);          
-		glVertex3f(-1.0f, 1.0f, 1.0f);          
-		glVertex3f(-1.0f, -1.0f, 1.0f);          
-		glVertex3f(1.0f, -1.0f, 1.0f); 
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
 
-		glColor3f(1.0f, 1.0f, 0.0f);              
-		glVertex3f(1.0f, -1.0f, -1.0f);          
-		glVertex3f(-1.0f, -1.0f, -1.0f);          
-		glVertex3f(-1.0f, 1.0f, -1.0f);          
-		glVertex3f(1.0f, 1.0f, -1.0f); 
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
 
-		glColor3f(0.0f, 0.0f, 1.0f);              
-		glVertex3f(-1.0f, 1.0f, 1.0f);          
-		glVertex3f(-1.0f, 1.0f, -1.0f);          
-		glVertex3f(-1.0f, -1.0f, -1.0f);          
-		glVertex3f(-1.0f, -1.0f, 1.0f); 
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
 
-		glColor3f(1.0f, 0.0f, 1.0f);              
-		glVertex3f(1.0f, 1.0f, -1.0f);          
-		glVertex3f(1.0f, 1.0f, 1.0f);          
-		glVertex3f(1.0f, -1.0f, 1.0f);          
-		glVertex3f(1.0f, -1.0f, -1.0f);          
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
 	glEnd();
 	return TRUE;
 }
@@ -251,7 +234,7 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscree
 		dwStyle |
 		WS_CLIPSIBLINGS |
 		WS_CLIPCHILDREN,
-		0, 0,
+		(1920 - width) / 2, (1080 - height) / 2,
 		WindowRect.right - WindowRect.left,
 		WindowRect.bottom - WindowRect.top,
 		NULL,
@@ -357,9 +340,9 @@ LRESULT CALLBACK WndProc(HWND	hWnd,
 		{
 			switch (wParam)
 			{
-			case SC_SCREENSAVE:
-			case SC_MONITORPOWER:
-				return 0;
+				case SC_SCREENSAVE:
+				case SC_MONITORPOWER:
+					return 0;
 			}
 			break;
 		}
@@ -389,6 +372,13 @@ LRESULT CALLBACK WndProc(HWND	hWnd,
 			if (DrawGLScene())
 				SwapBuffers(hDC);
 			return 0;
+		}
+
+		case WM_WINDOWPOSCHANGED:
+		{
+			if (DrawGLScene())
+				SwapBuffers(hDC);
+			break;
 		}
 	}
 
