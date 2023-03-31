@@ -55,6 +55,13 @@ GLvoid LoadGLTextures(string url)
 	glBindTexture(GL_TEXTURE_2D, textures[size - 1]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	GLfloat borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture->sizeX, texture->sizeY, 0, 
 		GL_RGB, GL_UNSIGNED_BYTE, texture->data);
 }
@@ -78,43 +85,14 @@ int InitGL(GLvoid)
 void DrawStar(int edges, GLfloat maxR, GLfloat minR)
 {
 	static GLfloat rotate = 0.0f;
-	static GLfloat positionX = 0.0f;
 
 	glLoadIdentity();
 
-	glTranslatef(-2.5f + positionX, 0.0f, -10.0f);
+	glTranslatef(-2.5f, 0.0f, -10.0f);
 	glRotatef(rotate, 0.0f, 1.0f, 0.0f);
-	rotate += 0.5f;
-	//positionX += 0.01f;
+	rotate += 0.1f;
 
 	GLfloat x, y, angle;
-
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
-	glBegin(GL_POLYGON);
-		glTexCoord2f(0.5f, 0.5f);
-		glVertex3f(0.0f, 0.0f, 0.5f);
-		for (int i = 0; i <= edges * 2; i++)
-		{
-			angle = 90.0f + (i * 360.0f / (edges * 2));
-			x = cos(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
-			y = sin(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
-
-			glTexCoord2f(x / (maxR * 2) + 0.5f, y / (maxR * 2) + 0.5f); glVertex3f(x, y, 0.5f);
-		}
-	glEnd();
-
-	glBegin(GL_POLYGON);
-		glTexCoord2f(0.5f, 0.5f);
-		glVertex3f(0.0f, 0.0f, -0.5f);
-		for (int i = 0; i <= edges * 2; i++)
-		{
-			angle = 90.0f + (i * 360.0f / (edges * 2));
-			x = cos(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
-			y = sin(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
-
-			glTexCoord2f(x / (maxR * 2) + 0.5f, y / (maxR * 2) + 0.5f); glVertex3f(x, y, -0.5f);
-		}
-	glEnd();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -136,6 +114,33 @@ void DrawStar(int edges, GLfloat maxR, GLfloat minR)
 			glVertex3f(x2, y2, 0.5f);
 		}
 	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.5f, 0.5f);
+	glVertex3f(0.0f, 0.0f, 0.5f);
+	for (int i = 0; i <= edges * 2; i++)
+	{
+		angle = 90.0f + (i * 360.0f / (edges * 2));
+		x = cos(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+		y = sin(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+
+		glTexCoord2f(x / (maxR * 2) + 0.5f, y / (maxR * 2) + 0.5f); glVertex3f(x, y, 0.5f);
+	}
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.5f, 0.5f);
+	glVertex3f(0.0f, 0.0f, -0.5f);
+	for (int i = 0; i <= edges * 2; i++)
+	{
+		angle = 90.0f + (i * 360.0f / (edges * 2));
+		x = cos(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+		y = sin(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+
+		glTexCoord2f(x / (maxR * 2) + 0.5f, y / (maxR * 2) + 0.5f); glVertex3f(x, y, -0.5f);
+	}
+	glEnd();
 }
 
 void DrawHalfCube()
@@ -145,17 +150,62 @@ void DrawHalfCube()
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
 
 	glTranslatef(2.5f, 0.0f, -10.0f);
-	glRotatef(rotation, 0.0f, 1.0f, 0.0f);
-	rotation += 0.1f;
+	glRotatef(rotation, 1.0f, 1.0f, 0.0f);
+	rotation += 0.01f;
 
 	glBegin(GL_TRIANGLES);
-		glVertex3f(-1.0f, -1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
-		glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(1.0f, -1.0f, 1.0f);
+		glTexCoord2f(-0.5f, 0.5f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(-1.0f, 1.0f, 1.0f);
 
-		glVertex3f(-1.0f, 1.0f, 1.0f);
-		glVertex3f(1.0f, 1.0f, 1.0f);
-		glVertex3f(1.0f, -1.0f, 1.0f);
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1.5f, 0.5f); glVertex3f(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(1.0f, -1.0f, 1.0f);
+
+
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(-0.5f, 0.5f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(-1.0f, 1.0f, -1.0f);
+
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.5f, 0.5f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(-1.0f, 1.0f, -1.0f);
+
+
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(-0.5f, 0.5f); glVertex3f(1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(1.0f, 1.0f, -1.0f);
+
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.5f, 0.5f); glVertex3f(-1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(1.0f, 1.0f, -1.0f);
+
+
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(1.0f, -1.0f, -1.0f);
+		glTexCoord2f(-0.5f, 0.5f); glVertex3f(1.0f, -1.0f, 1.0f);
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(1.0f, 1.0f, 1.0f);
+
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.5f, 0.5f); glVertex3f(1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(1.0f, 1.0f, 1.0f);
+
+
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(-0.5f, 0.5f); glVertex3f(-1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(1.0f, 1.0f, -1.0f);
+
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1.5f, 0.5f); glVertex3f(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(1.0f, 1.0f, -1.0f);
+
+
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(-0.5f, 0.5f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(1.0f, -1.0f, -1.0f);
+
+		glTexCoord2f(0.5f, 1.5f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.5f, 0.5f); glVertex3f(1.0f, -1.0f, 1.0f);
+		glTexCoord2f(0.5f, -0.5f); glVertex3f(1.0f, -1.0f, -1.0f);
 	glEnd();
 }
 
