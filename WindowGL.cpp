@@ -3,7 +3,15 @@
 #include <gl\glu.h>
 #include "gl\glaux.h"
 
+#include <math.h>
+#include <vector>
+#include <string>
+
 #pragma comment (lib, "legacy_stdio_definitions.lib")
+
+#define PI 3.14159265358979323846
+
+using namespace std;
 
 HDC			hDC = NULL;
 HGLRC		hRC = NULL;
@@ -34,26 +42,31 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)
 	glLoadIdentity();
 }
 
-GLuint texture[1];
+const GLsizei textureSize = 2;
+GLuint textures[textureSize];
 
-GLvoid LoadGLTextures()
+GLvoid LoadGLTextures(string url)
 {
-	AUX_RGBImageRec* texture1;
-	texture1 = auxDIBImageLoad("Data/CRATE.bmp");
+	static int size = 0;
+	size++;
 
-	glGenTextures(1, &texture[0]);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	AUX_RGBImageRec* texture = auxDIBImageLoad(url.c_str());
+
+	glBindTexture(GL_TEXTURE_2D, textures[size - 1]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY, 0, 
-		GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture->sizeX, texture->sizeY, 0, 
+		GL_RGB, GL_UNSIGNED_BYTE, texture->data);
 }
 
 int InitGL(GLvoid)
 {
-	LoadGLTextures();
+	glGenTextures(textureSize, &textures[0]);
+	LoadGLTextures("Data/BUMPS.bmp");
+	LoadGLTextures("Data/CUBE.bmp");
 	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);
+
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -62,54 +75,96 @@ int InitGL(GLvoid)
 	return TRUE;
 }
 
-int DrawGLScene(GLvoid)
+void DrawStar(int edges, GLfloat maxR, GLfloat minR)
 {
-	static GLfloat xrot = 0.0f;
-	static GLfloat yrot = 0.0f;
-	static GLfloat zrot = 0.0f;
+	static GLfloat rotate = 0.0f;
+	static GLfloat positionX = 0.0f;
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glTranslatef(0.0f, 0.0f, -5.0f);
-	glRotatef(xrot, 1.0f, 0.0f, 0.0f);
-	xrot += 0.3f;
-	glRotatef(yrot, 0.0f, 1.0f, 0.0f);
-	yrot += 0.2f;
-	glRotatef(zrot, 0.0f, 0.0f, 1.0f);
-	zrot += 0.4f;
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
 
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+	glTranslatef(-2.5f + positionX, 0.0f, -10.0f);
+	glRotatef(rotate, 0.0f, 1.0f, 0.0f);
+	rotate += 0.5f;
+	//positionX += 0.01f;
 
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+	GLfloat x, y, angle;
 
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.5f, 0.5f);
+		glVertex3f(0.0f, 0.0f, 0.5f);
+		for (int i = 0; i <= edges * 2; i++)
+		{
+			angle = 90.0f + (i * 360.0f / (edges * 2));
+			x = cos(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+			y = sin(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
 
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+			glTexCoord2f(x / (maxR * 2) + 0.5f, y / (maxR * 2) + 0.5f); glVertex3f(x, y, 0.5f);
+		}
 	glEnd();
+
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.5f, 0.5f);
+		glVertex3f(0.0f, 0.0f, -0.5f);
+		for (int i = 0; i <= edges * 2; i++)
+		{
+			angle = 90.0f + (i * 360.0f / (edges * 2));
+			x = cos(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+			y = sin(angle * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+
+			glTexCoord2f(x / (maxR * 2) + 0.5f, y / (maxR * 2) + 0.5f); glVertex3f(x, y, -0.5f);
+		}
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glBegin(GL_QUADS);
+		for (int i = 0; i < edges * 2; i++)
+		{
+			GLfloat angle1 = 90.0f + (i * 360.0f / (edges * 2));
+			GLfloat x1 = cos(angle1 * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+			GLfloat y1 = sin(angle1 * PI / 180) * ((i % 2 == 0) ? maxR : minR);
+
+			GLfloat angle2 = 90.0f + ((i + 1) * 360.0f / (edges * 2));
+			GLfloat x2 = cos(angle2 * PI / 180) * (((i + 1) % 2 == 0) ? maxR : minR);
+			GLfloat y2 = sin(angle2 * PI / 180) * (((i + 1) % 2 == 0) ? maxR : minR);
+
+			glColor3f(1.0f, 1.0f, 1.0f);
+			glVertex3f(x1, y1, 0.5f);
+			glVertex3f(x1, y1, -0.5f);
+			glVertex3f(x2, y2, -0.5f);
+			glVertex3f(x2, y2, 0.5f);
+		}
+	glEnd();
+}
+
+void DrawHalfCube()
+{
+	static GLfloat rotation = 0.0f;
+	glLoadIdentity();
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+
+	glTranslatef(2.5f, 0.0f, -10.0f);
+	glRotatef(rotation, 0.0f, 1.0f, 0.0f);
+	rotation += 0.1f;
+
+	glBegin(GL_TRIANGLES);
+		glVertex3f(-1.0f, -1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
+		glVertex3f(-1.0f, 1.0f, 1.0f);
+
+		glVertex3f(-1.0f, 1.0f, 1.0f);
+		glVertex3f(1.0f, 1.0f, 1.0f);
+		glVertex3f(1.0f, -1.0f, 1.0f);
+	glEnd();
+}
+
+BOOL DrawGLScene(GLvoid)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	DrawStar(5, 2.0f, 0.775f);
+	DrawHalfCube();
 	return TRUE;
 }
 
