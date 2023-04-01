@@ -1,25 +1,29 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
-// GLFW
+
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+
 using namespace std;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+}
 
 int main()
 {
-	//Инициализация GLFW
 	glfwInit();
-	//Настройка GLFW
-	//Задается минимальная требуемая версия OpenGL. 
-	//Мажорная 
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	//Минорная
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-	//Установка профайла для которого создается контекст
+
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//Выключение возможности изменения размера окна
+
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Window", nullptr, nullptr);
@@ -43,9 +47,15 @@ int main()
 
 	glViewport(0, 0, width, height);
 
+	glfwSetKeyCallback(window, key_callback);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		glfwSwapBuffers(window);
 	}
 
