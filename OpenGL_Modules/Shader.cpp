@@ -7,6 +7,11 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	setProgram();
 }
 
+GLuint Shader::getProgram() const
+{
+	return program;
+}
+
 string Shader::getVertexPath() const
 {
 	return vertexPath;
@@ -37,29 +42,29 @@ void Shader::setFragment(const GLchar* path)
 
 void Shader::setProgram()
 {
-	if (Program != 0)
-		glDeleteProgram(Program);
+	if (program != 0)
+		glDeleteProgram(program);
 
-	Program = glCreateProgram();
+	program = glCreateProgram();
 
-	glAttachShader(Program, vertexShader);
-	glAttachShader(Program, fragmentShader);
-	glLinkProgram(Program);
+	glAttachShader(program, vertexShader);
+	glAttachShader(program, fragmentShader);
+	glLinkProgram(program);
 
 	GLint success;
 	GLchar infoLog[512];
 
-	glGetProgramiv(Program, GL_LINK_STATUS, &success);
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (!success)
 	{
-		glGetProgramInfoLog(Program, 512, NULL, infoLog);
+		glGetProgramInfoLog(program, 512, NULL, infoLog);
 		cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << endl;
 	}
 }
 
 void Shader::Use()
 {
-	glUseProgram(Program);
+	glUseProgram(program);
 }
 
 string Shader::getCodeFromFile(const GLchar* path)

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 
+#define GLEW_STATIC
 #include "GL/glew.h"
 
 using namespace std;
@@ -13,7 +14,7 @@ class Shader
 {
 private:
 
-	GLuint Program = 0;
+	GLuint program = 0;
 
 	string vertexPath;
 	string fragmentPath;
@@ -23,7 +24,8 @@ private:
 
 public:
 	Shader(const GLchar* vertexPath = nullptr, const GLchar* fragmentPath = nullptr);
-
+	
+	GLuint getProgram() const;
 	string getVertexPath() const;
 	string getFragmentPath() const;
 
