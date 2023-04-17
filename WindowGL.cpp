@@ -3,7 +3,11 @@
 #include <GLFW/glfw3.h>
 #include <SOIL/SOIL.h>
 
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/type_ptr.hpp>
+
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #include <iostream>
 
@@ -84,21 +88,41 @@ int main()
 
     texture.UnBind();
 
+    glm::mat4 trans(1.0f);
+    
+    GLfloat currentTime = glfwGetTime();
+    GLfloat lastTime = currentTime;
+    GLfloat deltaTime = 0.0f;
+
+    GLfloat rotateSpeed = 90.0f;
+    GLfloat scaleSpeed = 0.1f;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+        currentTime = (GLfloat)glfwGetTime();
+        deltaTime = currentTime - lastTime;
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+        glActiveTexture(GL_TEXTURE0);
         texture.Bind();
+        glUniform1i(glGetUniformLocation(shader.getProgram(), "ourTexture"), 0);
+
+        trans = glm::rotate(trans, glm::radians(deltaTime * rotateSpeed), glm::vec3(0.0, 0.0, 1.0));
+        trans = glm::scale(glm::mat4(1.0f), glm::vec3(glm::cos(currentTime), glm::cos(currentTime), glm::cos(currentTime)));
 
         shader.Use();
+
+        GLuint transformLoc = glGetUniformLocation(shader.getProgram(), "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 
+        lastTime = currentTime;
 		glfwSwapBuffers(window);
 	}
     glDeleteVertexArrays(1, &VAO);
