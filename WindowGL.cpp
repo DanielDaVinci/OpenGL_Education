@@ -1,452 +1,181 @@
-#include <windows.h>		
-#include <gl\gl.h>	
-#include <gl\glu.h>
-#include "gl\glaux.h"
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <SOIL/SOIL.h>
 
-#pragma comment (lib, "legacy_stdio_definitions.lib")
+#include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/type_ptr.hpp>
 
-HDC			hDC = NULL;
-HGLRC		hRC = NULL;
-HWND		hWnd = NULL;
-HINSTANCE	hInstance;
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
-bool	keys[256];
-bool	active = TRUE;
-bool	fullscreen = TRUE;
+#include <iostream>
 
-LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+#include "OpenGL_Modules/Shader.h"
+#include "OpenGL_Modules/Texture.h"
 
-GLvoid ReSizeGLScene(GLsizei width, GLsizei height)
+using namespace std;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	if (height == 0)
-	{
-		height = 1;
-	}
-
-	glViewport(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-GLuint texture[1];
+const GLuint WIDTH = 800, HEIGHT = 600;
 
-GLvoid LoadGLTextures()
+int main()
 {
-	AUX_RGBImageRec* texture1;
-	texture1 = auxDIBImageLoad("Data/CRATE.bmp");
+    glfwInit();
 
-	glGenTextures(1, &texture[0]);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, texture1->sizeX, texture1->sizeY, 0, 
-		GL_RGB, GL_UNSIGNED_BYTE, texture1->data);
-}
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-int InitGL(GLvoid)
-{
-	LoadGLTextures();
-	glEnable(GL_TEXTURE_2D);
-	glShadeModel(GL_SMOOTH);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClearDepth(1.0f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	return TRUE;
-}
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Window", nullptr, nullptr);
+    glfwMakeContextCurrent(window);
 
-int DrawGLScene(GLvoid)
-{
-	static GLfloat xrot = 0.0f;
-	static GLfloat yrot = 0.0f;
-	static GLfloat zrot = 0.0f;
+    glfwSetKeyCallback(window, key_callback);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glTranslatef(0.0f, 0.0f, -5.0f);
-	glRotatef(xrot, 1.0f, 0.0f, 0.0f);
-	xrot += 0.3f;
-	glRotatef(yrot, 0.0f, 1.0f, 0.0f);
-	yrot += 0.2f;
-	glRotatef(zrot, 0.0f, 0.0f, 1.0f);
-	zrot += 0.4f;
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+    glewExperimental = GL_TRUE;
 
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+    glewInit();
 
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+    int winWidth, winHeight;
+    glfwGetFramebufferSize(window, &winWidth, &winHeight);
+    glViewport(0, 0, winWidth, winHeight);
 
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
 
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+    Shader shader("Data/Shaders/shader.vs", "Data/Shaders/shader.frag");
 
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
-	glEnd();
-	return TRUE;
-}
+    float vertices[] = {
+         // Позиции           // Текстурные координаты
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-GLvoid KillGLWindow(GLvoid)
-{
-	if (fullscreen)
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
+
+    GLuint VBO, VAO;
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    
+    Texture texture(GL_TEXTURE_2D, "Data/Textures/CRATE.BMP", ColorFormat::RGB);
+    texture.Bind();
+
+    texture.setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    texture.setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    texture.setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    texture.setParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    GLfloat borderColor[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    texture.setParameter(GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    texture.UnBind();
+    
+    GLfloat currentTime = glfwGetTime();
+    GLfloat lastTime = currentTime;
+    GLfloat deltaTime = 0.0f;
+
+    GLfloat rotateSpeed = 90.0f;
+
+	while (!glfwWindowShouldClose(window))
 	{
-		ChangeDisplaySettings(NULL, 0);
-		ShowCursor(TRUE);
+		glfwPollEvents();
+        currentTime = (GLfloat)glfwGetTime();
+        deltaTime = currentTime - lastTime;
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+        texture.Bind();
+        glUniform1i(glGetUniformLocation(shader.getProgram(), "ourTexture"), 0);
+
+        shader.Use();
+
+        glm::mat4 model(1.0f);
+        model = glm::rotate(model, glm::radians(currentTime * rotateSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+
+        glm::mat4 view(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        view = glm::rotate(view, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+        glm::mat4 projection(1.0f);
+        projection = glm::perspective(45.0f, (GLfloat)winWidth / winHeight, 0.1f, 100.0f);
+
+        GLuint modelLoc = glGetUniformLocation(shader.getProgram(), "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        GLuint viewLoc = glGetUniformLocation(shader.getProgram(), "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        GLuint projectionLoc = glGetUniformLocation(shader.getProgram(), "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+
+        lastTime = currentTime;
+		glfwSwapBuffers(window);
 	}
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 
-	if (hRC)
-	{
-		if (!wglMakeCurrent(NULL, NULL))
-		{
-			MessageBox(NULL, "Release Of DC And RC Failed.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
-		}
-
-		if (!wglDeleteContext(hRC))
-		{
-			MessageBox(NULL, "Release Rendering Context Failed.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
-		}
-		hRC = NULL;
-	}
-
-	if (hDC && !ReleaseDC(hWnd, hDC))
-	{
-		MessageBox(NULL, "Release Device Context Failed.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
-		hDC = NULL;
-	}
-
-	if (hWnd && !DestroyWindow(hWnd))
-	{
-		MessageBox(NULL, "Could Not Release hWnd.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
-		hWnd = NULL;
-	}
-
-	if (!UnregisterClass("OpenGL", hInstance))
-	{
-		MessageBox(NULL, "Could Not Unregister Class.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
-		hInstance = NULL;
-	}
-}
-
-BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag)
-{
-	GLuint		PixelFormat;
-	WNDCLASS	wc;
-	DWORD		dwExStyle;
-	DWORD		dwStyle;
-	RECT		WindowRect;
-	WindowRect.left = (long)0;
-	WindowRect.right = (long)width;
-	WindowRect.top = (long)0;
-	WindowRect.bottom = (long)height;
-
-	fullscreen = fullscreenflag;
-
-	hInstance = GetModuleHandle(NULL);
-	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wc.lpfnWndProc = (WNDPROC)WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = NULL;
-	wc.lpszMenuName = NULL;
-	wc.lpszClassName = "OpenGL";
-
-	if (!RegisterClass(&wc))
-	{
-		MessageBox(NULL, "Failed To Register The Window Class.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	if (fullscreen)
-	{
-		DEVMODE dmScreenSettings;
-		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
-		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
-		dmScreenSettings.dmPelsWidth = width;
-		dmScreenSettings.dmPelsHeight = height;
-		dmScreenSettings.dmBitsPerPel = bits;
-		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-
-
-		if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-		{
-
-			if (MessageBox(NULL, "The Requested Fullscreen Mode Is Not Supported By\nYour Video Card. Use Windowed Mode Instead?", "NeHe GL", MB_YESNO | MB_ICONEXCLAMATION) == IDYES)
-			{
-				fullscreen = FALSE;
-			}
-			else
-			{
-
-				MessageBox(NULL, "Program Will Now Close.", "ERROR", MB_OK | MB_ICONSTOP);
-				return FALSE;
-			}
-		}
-	}
-
-	if (fullscreen)
-	{
-		dwExStyle = WS_EX_APPWINDOW;
-		dwStyle = WS_POPUP;
-		ShowCursor(FALSE);
-	}
-	else
-	{
-		dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-		dwStyle = WS_OVERLAPPEDWINDOW;
-	}
-
-	AdjustWindowRectEx(&WindowRect, dwStyle, FALSE, dwExStyle);
-
-
-	if (!(hWnd = CreateWindowEx(dwExStyle,
-		"OpenGL",
-		title,
-		dwStyle |
-		WS_CLIPSIBLINGS |
-		WS_CLIPCHILDREN,
-		(1920 - width) / 2, (1080 - height) / 2,
-		WindowRect.right - WindowRect.left,
-		WindowRect.bottom - WindowRect.top,
-		NULL,
-		NULL,
-		hInstance,
-		NULL)))
-	{
-		KillGLWindow();
-		MessageBox(NULL, "Window Creation Error.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	static	PIXELFORMATDESCRIPTOR pfd =
-	{
-		sizeof(PIXELFORMATDESCRIPTOR),
-		1,
-		PFD_DRAW_TO_WINDOW |
-		PFD_SUPPORT_OPENGL |
-		PFD_DOUBLEBUFFER,
-		PFD_TYPE_RGBA,
-		bits,
-		0, 0, 0, 0, 0, 0,
-		0,
-		0,
-		0,
-		0, 0, 0, 0,
-		16,
-		0,
-		0,
-		PFD_MAIN_PLANE,
-		0,
-		0, 0, 0
-	};
-
-	if (!(hDC = GetDC(hWnd)))
-	{
-		KillGLWindow();
-		MessageBox(NULL, "Can't Create A GL Device Context.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	if (!(PixelFormat = ChoosePixelFormat(hDC, &pfd)))
-	{
-		KillGLWindow();
-		MessageBox(NULL, "Can't Find A Suitable PixelFormat.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	if (!SetPixelFormat(hDC, PixelFormat, &pfd))
-	{
-		KillGLWindow();
-		MessageBox(NULL, "Can't Set The PixelFormat.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	if (!(hRC = wglCreateContext(hDC)))
-	{
-		KillGLWindow();
-		MessageBox(NULL, "Can't Create A GL Rendering Context.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	if (!wglMakeCurrent(hDC, hRC))
-	{
-		KillGLWindow();
-		MessageBox(NULL, "Can't Activate The GL Rendering Context.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	ShowWindow(hWnd, SW_SHOW);
-	SetForegroundWindow(hWnd);
-	SetFocus(hWnd);
-	ReSizeGLScene(width, height);
-
-	if (!InitGL())
-	{
-		KillGLWindow();
-		MessageBox(NULL, "Initialization Failed.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-LRESULT CALLBACK WndProc(HWND	hWnd,
-	UINT	uMsg,
-	WPARAM	wParam,
-	LPARAM	lParam)
-{
-	switch (uMsg)
-	{
-		case WM_ACTIVATE:
-		{
-			if ((LOWORD(wParam) != WA_INACTIVE) && !((BOOL)HIWORD(wParam)))
-				active = TRUE;
-			else
-				active = FALSE;
-
-			return 0;
-		}
-
-		case WM_SYSCOMMAND:
-		{
-			switch (wParam)
-			{
-				case SC_SCREENSAVE:
-				case SC_MONITORPOWER:
-					return 0;
-			}
-			break;
-		}
-
-		case WM_CLOSE:
-		{
-			PostQuitMessage(0);
-			return 0;
-		}
-
-		case WM_KEYDOWN:
-		{
-			keys[wParam] = TRUE;
-			return 0;
-		}
-
-		case WM_KEYUP:
-		{
-			keys[wParam] = FALSE;
-			return 0;
-		}
-
-		case WM_SIZE:
-		{
-			ReSizeGLScene(LOWORD(lParam), HIWORD(lParam));
-
-			if (DrawGLScene())
-				SwapBuffers(hDC);
-			return 0;
-		}
-
-		case WM_WINDOWPOSCHANGED:
-		{
-			if (DrawGLScene())
-				SwapBuffers(hDC);
-			break;
-		}
-	}
-
-
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
-
-int WINAPI WinMain(HINSTANCE	hInstance,
-	HINSTANCE	hPrevInstance,
-	LPSTR		lpCmdLine,
-	int			nCmdShow)
-{
-	MSG		msg;
-	BOOL	done = FALSE;
-
-
-	if (MessageBox(NULL, "Would You Like To Run In Fullscreen Mode?", "Start FullScreen?", MB_YESNO | MB_ICONQUESTION) == IDNO)
-	{
-		fullscreen = FALSE;
-	}
-
-
-	if (!CreateGLWindow("Window", 640, 480, 32, fullscreen))
-	{
-		return 0;
-	}
-
-	while (!done)
-	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			if (msg.message == WM_QUIT)
-			{
-				done = TRUE;
-			}
-			else
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-		else
-		{
-
-			if ((active && !DrawGLScene()) || keys[VK_ESCAPE])
-			{
-				done = TRUE;
-			}
-			else
-			{
-				SwapBuffers(hDC);
-			}
-
-			if (keys[VK_F1])
-			{
-				keys[VK_F1] = FALSE;
-				KillGLWindow();
-				fullscreen = !fullscreen;
-
-				if (!CreateGLWindow("Window", 640, 480, 32, fullscreen))
-				{
-					return 0;
-				}
-			}
-		}
-	}
-
-
-	KillGLWindow();
-	return (msg.wParam);
+	glfwTerminate();
+	return 0;
 }
