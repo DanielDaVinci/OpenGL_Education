@@ -16,6 +16,7 @@
     <ClCompile Include="WindowGL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Drawing.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
