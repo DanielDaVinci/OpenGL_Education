@@ -7,7 +7,7 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 
-//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #include <iostream>
 
@@ -95,7 +95,6 @@ int main()
     GLfloat deltaTime = 0.0f;
 
     GLfloat rotateSpeed = 90.0f;
-    GLfloat scaleSpeed = 0.1f;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -106,7 +105,6 @@ int main()
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-        glActiveTexture(GL_TEXTURE0);
         texture.Bind();
         glUniform1i(glGetUniformLocation(shader.getProgram(), "ourTexture"), 0);
 
