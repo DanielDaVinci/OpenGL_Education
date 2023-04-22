@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="OpenGL_Modules\Camera.cpp" />
     <ClCompile Include="OpenGL_Modules\Shader.cpp" />
     <ClCompile Include="OpenGL_Modules\Texture.cpp" />
     <ClCompile Include="WindowGL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="OpenGL_Modules\Camera.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
