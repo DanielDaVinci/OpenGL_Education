@@ -214,7 +214,8 @@ int main()
         // Main Cube
         shader.Use();
 
-        shader.setUniform("lightPos", glm::vec3(1.0f, 1.0f, -1.25f));
+        shader.setUniform("viewPos", sceneCamera.getPosition());
+        shader.setUniform("lightPos", glm::vec3(glm::cos(currentTime) * 2.0f, 1.0f, glm::sin(currentTime) * 2.0f - 2.0f));
         shader.setUniform("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         shader.setUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -238,8 +239,9 @@ int main()
         lightShader.Use();
 
         lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, glm::vec3(1.0f, 1.0f, -1.25f));
+        lightModel = glm::translate(lightModel, glm::vec3(glm::cos(currentTime) * 2.0f, 1.0f, glm::sin(currentTime) * 2.0f - 2.0f));
         lightModel = glm::scale(lightModel, glm::vec3(0.2f, 0.2f, 0.2f));
+        lightModel = glm::rotate(lightModel, currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
 
         view = sceneCamera.getViewMatrix();
 
