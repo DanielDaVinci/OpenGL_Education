@@ -23,14 +23,14 @@ ostream& operator << (ostream& out, glm::vec3& vector)
 #include "OpenGL_Modules/Texture.h"
 #include "OpenGL_Modules/Camera.h"
 
-Camera sceneCamera = Camera(800, 600, 45.0f, { 0.0f, 0.0f, 0.0f }, {0.0f, -90.0f, 0.0f});
+Camera sceneCamera = Camera(800, 600, 45.0f, { 0.0f, 0.0f, 0.0f }, { 0.0f, -90.0f, 0.0f });
 
 bool keys[1024];
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
 
     if (action == GLFW_PRESS)
         keys[key] = true;
@@ -45,7 +45,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     static GLfloat firstMouse = true;
 
     GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = lastY - ypos; 
+    GLfloat yoffset = lastY - ypos;
     lastX = xpos;
     lastY = ypos;
 
@@ -163,6 +163,26 @@ int main()
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
 
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f,  2.0f, -2.5f),
+        glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3(0.7f,  0.2f,  2.0f),
+        glm::vec3(2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3(0.0f,  0.0f, -3.0f)
+    };
+
     GLuint VBO, VAO;
 
     glGenVertexArrays(1, &VAO);
@@ -219,14 +239,13 @@ int main()
     specTexture.setParameter(GL_TEXTURE_BORDER_COLOR, borderColor);
 
     specTexture.UnBind();
-    
+
     GLfloat currentTime = glfwGetTime();
     GLfloat lastTime = currentTime;
     GLfloat deltaTime = 0.0f;
 
     GLfloat rotateSpeed = 90.0f;
 
-    glm::mat4 model(1.0f);
     glm::mat4 lightModel(1.0f);
 
     glm::mat4 view(1.0f);
@@ -234,41 +253,57 @@ int main()
 
     shader.Use();
     shader.setUniform("material.diffuse", 0);
+    shader.setUniform("material.specular", 1);
+    shader.setUniform("material.shininess", 32.0f);
 
-	while (!glfwWindowShouldClose(window))
-	{
-		glfwPollEvents();
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
         currentTime = (GLfloat)glfwGetTime();
         deltaTime = currentTime - lastTime;
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Main Cube
         shader.Use();
 
-        shader.setUniform("material.diffuse", 0);
-        shader.setUniform("material.specular", 1);
-        shader.setUniform("material.shininess", 32.0f);
+        shader.setUniform("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+        shader.setUniform("dirLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        shader.setUniform("dirLight.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
+        shader.setUniform("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
 
-        shader.setUniform("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-        shader.setUniform("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        shader.setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        for (int i = 0; i < 4; i++)
+        {
+            shader.setUniform(("pointLights[" + to_string(i) + "].position").c_str(), pointLightPositions[i]);
+            shader.setUniform(("pointLights[" + to_string(i) + "].ambient").c_str(), glm::vec3(0.05f, 0.05f, 0.05f));
+            shader.setUniform(("pointLights[" + to_string(i) + "].diffuse").c_str(), glm::vec3(0.5f, 0.5f, 0.5f));
+            shader.setUniform(("pointLights[" + to_string(i) + "].specular").c_str(), glm::vec3(1.0f, 1.0f, 1.0f));
+            shader.setUniform(("pointLights[" + to_string(i) + "].constant").c_str(), 1.0f);
+            shader.setUniform(("pointLights[" + to_string(i) + "].linear").c_str(), 0.22f);
+            shader.setUniform(("pointLights[" + to_string(i) + "].quadratic").c_str(), 0.20f);
+        }
+
+        shader.setUniform("spotLight.position", sceneCamera.getPosition());
+        shader.setUniform("spotLight.direction", sceneCamera.getFrontDirection());
+        shader.setUniform("spotLight.innerAngle", glm::cos(glm::radians(12.5f)));
+        shader.setUniform("spotLight.outerAngle", glm::cos(glm::radians(15.5f)));
+        shader.setUniform("spotLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        shader.setUniform("spotLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        shader.setUniform("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setUniform("spotLight.constant", 1.0f);
+        shader.setUniform("spotLight.linear", 0.09f);
+        shader.setUniform("spotLight.quadratic", 0.032f);
 
         shader.setUniform("viewPos", sceneCamera.getPosition());
-        shader.setUniform("lightPos", glm::vec3(glm::cos(currentTime) * 2.0f, 1.0f, glm::sin(currentTime) * 2.0f - 2.0f));
         shader.setUniform("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         shader.setUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
 
         do_movement(deltaTime);
         view = sceneCamera.getViewMatrix();
 
         projection = sceneCamera.getProjectionMatrix();
 
-        shader.setUniform("model", model);
         shader.setUniform("view", view);
         shader.setUniform("projection", projection);
 
@@ -277,8 +312,17 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         specTexture.Bind();
 
-		glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(VAO);
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            glm::mat4 model(1.0f);
+            model = glm::translate(model, cubePositions[i] - glm::vec3(0.0f, 0.0f, 2.0f));
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            shader.setUniform("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         glBindVertexArray(0);
 
         texture.UnBind();
@@ -287,29 +331,30 @@ int main()
         // Lamp
         lightShader.Use();
 
-        lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, glm::vec3(glm::cos(currentTime) * 2.0f, 1.0f, glm::sin(currentTime) * 2.0f - 2.0f));
-        lightModel = glm::scale(lightModel, glm::vec3(0.2f, 0.2f, 0.2f));
-        lightModel = glm::rotate(lightModel, currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
-
         view = sceneCamera.getViewMatrix();
 
         projection = sceneCamera.getProjectionMatrix();
 
-        lightShader.setUniform("model", lightModel);
         lightShader.setUniform("view", view);
         lightShader.setUniform("projection", projection);
 
         glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (unsigned int i = 0; i < 4; i++)
+        {
+            lightModel = glm::mat4(1.0f);
+            lightModel = glm::translate(lightModel, pointLightPositions[i]);
+            lightModel = glm::scale(lightModel, glm::vec3(0.2f));
+            lightShader.setUniform("model", lightModel);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         glBindVertexArray(0);
 
         lastTime = currentTime;
-		glfwSwapBuffers(window);
-	}
+        glfwSwapBuffers(window);
+    }
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 
-	glfwTerminate();
-	return 0;
+    glfwTerminate();
+    return 0;
 }
