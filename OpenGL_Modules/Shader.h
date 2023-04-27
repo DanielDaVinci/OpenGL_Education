@@ -41,6 +41,8 @@ public:
 	void Use();
 
 	GLuint getUniformLocation(const GLchar* name);
+	void setUniform(const GLchar* name, const GLfloat value);
+	void setUniform(const GLchar* name, const GLint value);
 	void setUniform(const GLchar* name, const GLfloat* value);
 	void setUniform(const GLchar* name, glm::vec3 value);
 	void setUniform(const GLchar* name, glm::mat4 value);

@@ -72,6 +72,16 @@ GLuint Shader::getUniformLocation(const GLchar* name)
 	return glGetUniformLocation(program, name);
 }
 
+void Shader::setUniform(const GLchar* name, const GLfloat value)
+{
+	glUniform1f(getUniformLocation(name), value);
+}
+
+void Shader::setUniform(const GLchar* name, const GLint value)
+{
+	glUniform1i(getUniformLocation(name), value);
+}
+
 void Shader::setUniform(const GLchar* name, const GLfloat* value)
 {	
 	glUniform4fv(getUniformLocation(name), sizeof(value) / sizeof(GLfloat), value);
