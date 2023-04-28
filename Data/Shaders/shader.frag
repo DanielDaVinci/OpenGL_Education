@@ -60,20 +60,20 @@ out vec4 color;
 uniform Material material;
 
 uniform vec3 viewPos;
-uniform vec3 lightColor;
-uniform vec3 objectColor;
 
 void main()
 {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    vec3 result = vec3(0.0);
+
+    result += max(CalcDirLight(dirLight, norm, viewDir), 0);
 
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
+        result += max(CalcPointLight(pointLights[i], norm, FragPos, viewDir), 0);    
 
-    result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
+    result += max(CalcSpotLight(spotLight, norm, FragPos, viewDir), 0);    
     
     color = vec4(result, 1.0);
 } 

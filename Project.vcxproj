@@ -11,21 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OpenGL_Modules\Camera.cpp" />
-    <ClCompile Include="OpenGL_Modules\Shader.cpp" />
-    <ClCompile Include="OpenGL_Modules\Texture.cpp" />
+    <ClCompile Include="glModules\Camera.cpp" />
+    <ClCompile Include="glModules\Shader.cpp" />
+    <ClCompile Include="glModules\Mesh.cpp" />
+    <ClCompile Include="glModules\Model.cpp" />
     <ClCompile Include="WindowGL.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenGL_Modules\Camera.h" />
+    <ClInclude Include="glModules\Camera.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="OpenGL_Modules\Shader.h" />
-    <ClInclude Include="OpenGL_Modules\Texture.h" />
+    <ClInclude Include="glModules\Shader.h" />
+    <ClInclude Include="glModules\Mesh.h" />
+    <ClInclude Include="glModules\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\lamp_lightShader.frag" />
@@ -105,7 +107,7 @@
       <Culture>0x1009</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;assimp-vc143-mtd.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug/Project.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
