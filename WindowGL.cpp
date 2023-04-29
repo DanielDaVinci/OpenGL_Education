@@ -156,6 +156,18 @@ int main()
         shader.setUniform("spotLight.linear", 0.22f);
         shader.setUniform("spotLight.constant", 0.20f);
 
+        //shader.setUniform("material.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+        //shader.setUniform("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+        //shader.setUniform("material.shininess", 32.0f);
+
+        //shader.setUniform("pointLight.position", sceneCamera.getPosition());
+        //shader.setUniform("pointLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+        //shader.setUniform("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+        //shader.setUniform("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        //shader.setUniform("pointLight.constant", 1.0f);
+        //shader.setUniform("pointLight.linear", 0.22f);
+        //shader.setUniform("pointLight.constant", 0.20f);
+
         shader.setUniform("viewPos", sceneCamera.getPosition());
 
         glm::mat4 model(1.0f);
