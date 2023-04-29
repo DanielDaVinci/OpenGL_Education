@@ -21,10 +21,10 @@ void Mesh::Draw(Shader shader)
         string number;
         string name = textures[i].type;
         if (name == "texture_diffuse")
-            ss << diffuseNr++;
+            number = to_string(diffuseNr++);
         else if (name == "texture_specular")
-            ss << specularNr++;
-        number = ss.str();
+            number = to_string(specularNr++);
+
 
         shader.setUniform(("material." + name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
