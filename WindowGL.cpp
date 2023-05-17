@@ -118,10 +118,24 @@ int main()
     glViewport(0, 0, winWidth, winHeight);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+
+    glStencilFunc(GL_EQUAL, 1, 0xFF);
 
     Shader shader("Data/Shaders/shader.vs", "Data/Shaders/shader.frag");
+    Shader strokeShader("Data/Shaders/strokeShader.vs", "Data/Shaders/strokeShader.frag");
 
     Model ourModel("resources/objects/backpack/backpack.obj");
+    Model secondModel = ourModel;
+
+    for (int i = 0; i < secondModel.meshes.size(); i++)
+    {
+        for (int j = 0; j < secondModel.meshes[i].indices.size(); j++)
+        {
+            unsigned int index = secondModel.meshes[i].indices[j];
+            secondModel.meshes[i].vertices[index].Position += secondModel.meshes[i].vertices[j].Normal * 2.0f;
+        }
+    }
 
     GLfloat currentTime = glfwGetTime();
     GLfloat lastTime = currentTime;
@@ -138,35 +152,38 @@ int main()
         currentTime = (GLfloat)glfwGetTime();
         deltaTime = currentTime - lastTime;
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
         do_movement(deltaTime);
 
+        glfwSetWindowTitle(window, to_string(int(1.0f / deltaTime)).c_str());
+
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
         shader.Use();
 
-        shader.setUniform("spotLight.position", sceneCamera.getPosition());
-        shader.setUniform("spotLight.direction", sceneCamera.getFrontDirection());
-        shader.setUniform("spotLight.innerAngle", glm::cos(glm::radians(12.5f)));
-        shader.setUniform("spotLight.outerAngle", glm::cos(glm::radians(17.5f)));
-        shader.setUniform("spotLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-        shader.setUniform("spotLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        shader.setUniform("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        shader.setUniform("spotLight.constant", 1.0f);
-        shader.setUniform("spotLight.linear", 0.22f);
-        shader.setUniform("spotLight.constant", 0.20f);
+        //shader.setUniform("spotLight.position", sceneCamera.getPosition());
+        //shader.setUniform("spotLight.direction", sceneCamera.getFrontDirection());
+        //shader.setUniform("spotLight.innerAngle", glm::cos(glm::radians(12.5f)));
+        //shader.setUniform("spotLight.outerAngle", glm::cos(glm::radians(17.5f)));
+        //shader.setUniform("spotLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+        //shader.setUniform("spotLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+        //shader.setUniform("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        //shader.setUniform("spotLight.constant", 1.0f);
+        //shader.setUniform("spotLight.linear", 0.22f);
+        //shader.setUniform("spotLight.constant", 0.20f);
 
-        //shader.setUniform("material.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        //shader.setUniform("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-        //shader.setUniform("material.shininess", 32.0f);
-
-        //shader.setUniform("pointLight.position", sceneCamera.getPosition());
-        //shader.setUniform("pointLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-        //shader.setUniform("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        //shader.setUniform("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        //shader.setUniform("pointLight.constant", 1.0f);
-        //shader.setUniform("pointLight.linear", 0.22f);
-        //shader.setUniform("pointLight.constant", 0.20f);
+        shader.setUniform("pointLight.position", sceneCamera.getPosition());
+        shader.setUniform("pointLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+        shader.setUniform("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+        shader.setUniform("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setUniform("pointLight.constant", 1.0f);
+        shader.setUniform("pointLight.linear", 0.22f);
+        shader.setUniform("pointLight.constant", 0.20f);
 
         shader.setUniform("viewPos", sceneCamera.getPosition());
 
@@ -182,6 +199,27 @@ int main()
         shader.setUniform("projection", projection);
 
         ourModel.Draw(shader);
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+        strokeShader.Use();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
+
+        view = sceneCamera.getViewMatrix();
+
+        projection = sceneCamera.getProjectionMatrix();
+
+        strokeShader.setUniform("model", model);
+        strokeShader.setUniform("view", view);
+        strokeShader.setUniform("projection", projection);
+
+        secondModel.Draw(strokeShader);
+
+        glStencilMask(0xFF);
+        glEnable(GL_DEPTH_TEST);
 
         lastTime = currentTime;
         glfwSwapBuffers(window);
