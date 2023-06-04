@@ -117,25 +117,79 @@ int main()
     glfwGetFramebufferSize(window, &winWidth, &winHeight);
     glViewport(0, 0, winWidth, winHeight);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_STENCIL_TEST);
+    // NEW
 
-    glStencilFunc(GL_EQUAL, 1, 0xFF);
+    unsigned int framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    unsigned int texColorBuffer;
+    glGenTextures(1, &texColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // ---------------
+
+
+    glEnable(GL_DEPTH_TEST);
 
     Shader shader("Data/Shaders/shader.vs", "Data/Shaders/shader.frag");
     Shader strokeShader("Data/Shaders/strokeShader.vs", "Data/Shaders/strokeShader.frag");
+    Shader frameShader("Data/Shaders/frameShader.vs", "Data/Shaders/frameShader.frag");
 
     Model ourModel("resources/objects/backpack/backpack.obj");
     Model secondModel = ourModel;
 
-    for (int i = 0; i < secondModel.meshes.size(); i++)
-    {
-        for (int j = 0; j < secondModel.meshes[i].indices.size(); j++)
-        {
-            unsigned int index = secondModel.meshes[i].indices[j];
-            secondModel.meshes[i].vertices[index].Position += secondModel.meshes[i].vertices[j].Normal * 2.0f;
-        }
-    }
+    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    unsigned int quadVAO, quadVBO;
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+    frameShader.Use();
+    frameShader.setUniform("screenTexture", 0);
+
+    //for (int i = 0; i < secondModel.meshes.size(); i++)
+    //{
+    //    for (int j = 0; j < secondModel.meshes[i].indices.size(); j++)
+    //    {
+    //        unsigned int index = secondModel.meshes[i].indices[j];
+    //        secondModel.meshes[i].vertices[index].Position += secondModel.meshes[i].vertices[j].Normal * 2.0f;
+    //    }
+    //}
 
     GLfloat currentTime = glfwGetTime();
     GLfloat lastTime = currentTime;
@@ -148,22 +202,19 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        glfwPollEvents();
         currentTime = (GLfloat)glfwGetTime();
         deltaTime = currentTime - lastTime;
 
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glEnable(GL_DEPTH_TEST);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
         do_movement(deltaTime);
 
         glfwSetWindowTitle(window, to_string(int(1.0f / deltaTime)).c_str());
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
         shader.Use();
 
         //shader.setUniform("spotLight.position", sceneCamera.getPosition());
@@ -200,29 +251,20 @@ int main()
 
         ourModel.Draw(shader);
 
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glDisable(GL_DEPTH_TEST);
-        strokeShader.Use();
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        view = sceneCamera.getViewMatrix();
-
-        projection = sceneCamera.getProjectionMatrix();
-
-        strokeShader.setUniform("model", model);
-        strokeShader.setUniform("view", view);
-        strokeShader.setUniform("projection", projection);
-
-        secondModel.Draw(strokeShader);
-
-        glStencilMask(0xFF);
-        glEnable(GL_DEPTH_TEST);
+        frameShader.Use();
+        glBindVertexArray(quadVAO);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         lastTime = currentTime;
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     glfwTerminate();
