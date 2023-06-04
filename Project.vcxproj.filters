@@ -13,15 +13,27 @@
       <UniqueIdentifier>{744f5f98-d929-4eeb-bace-18b44e130eb5}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Header Files\imgui">
+      <UniqueIdentifier>{c704b4b5-ff66-4905-8e17-c0cc5f1802b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\imgui">
+      <UniqueIdentifier>{917e4690-592e-4ab7-b3a0-ad305b3bde57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGL_Modules\Shader.cpp">
+    <ClCompile Include="glModules\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGL_Modules\Texture.cpp">
+    <ClCompile Include="glModules\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glModules\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glModules\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,15 +56,23 @@
     <ClInclude Include="include\GL\wglew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGL_Modules\Shader.h">
+    <ClInclude Include="glModules\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGL_Modules\Texture.h">
+    <ClInclude Include="glModules\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glModules\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glModules\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\shader.frag" />
     <None Include="Data\Shaders\shader.vs" />
+    <None Include="Data\Shaders\strokeShader.frag" />
+    <None Include="Data\Shaders\strokeShader.vs" />
   </ItemGroup>
 </Project>
