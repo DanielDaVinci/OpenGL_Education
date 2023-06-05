@@ -20,9 +20,10 @@ ostream& operator << (ostream& out, glm::vec3& vector)
     return out;
 }
 
-#include "glModules/Shader.h"
-#include "glModules/Camera.h"
-#include "glModules/Model.h"
+#include "engine/graphic/Shader.h"
+#include "engine/objects/Camera.h"
+#include "engine/graphic/Model.h"
+#include "engine/screen/Frame.h"
 
 Camera sceneCamera = Camera(800, 600, 45.0f, { 0.0f, 0.0f, 0.0f }, { 0.0f, -90.0f, 0.0f });
 
@@ -96,6 +97,7 @@ int main()
 
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Window", nullptr, nullptr);
     glfwMakeContextCurrent(window);
+
     glfwSetWindowPos(window, (1920 - WIDTH) / 2, (1080 - HEIGHT) / 2);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -117,38 +119,9 @@ int main()
     glfwGetFramebufferSize(window, &winWidth, &winHeight);
     glViewport(0, 0, winWidth, winHeight);
 
-    // NEW
-
-    unsigned int framebuffer;
-    glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-    unsigned int texColorBuffer;
-    glGenTextures(1, &texColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
-
-    unsigned int rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // ---------------
-
-
     glEnable(GL_DEPTH_TEST);
+
+    Frame frame(winWidth, winHeight);
 
     Shader shader("Data/Shaders/shader.vs", "Data/Shaders/shader.frag");
     Shader strokeShader("Data/Shaders/strokeShader.vs", "Data/Shaders/strokeShader.frag");
@@ -157,55 +130,19 @@ int main()
     Model ourModel("resources/objects/backpack/backpack.obj");
     Model secondModel = ourModel;
 
-    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-        // positions   // texCoords
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        -1.0f, -1.0f,  0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-
-        -1.0f,  1.0f,  0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f, 1.0f
-    };
-
-    unsigned int quadVAO, quadVBO;
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
-    frameShader.Use();
-    frameShader.setUniform("screenTexture", 0);
-
-    //for (int i = 0; i < secondModel.meshes.size(); i++)
-    //{
-    //    for (int j = 0; j < secondModel.meshes[i].indices.size(); j++)
-    //    {
-    //        unsigned int index = secondModel.meshes[i].indices[j];
-    //        secondModel.meshes[i].vertices[index].Position += secondModel.meshes[i].vertices[j].Normal * 2.0f;
-    //    }
-    //}
-
     GLfloat currentTime = glfwGetTime();
     GLfloat lastTime = currentTime;
     GLfloat deltaTime = 0.0f;
 
-    GLfloat rotateSpeed = 90.0f;
-
-    glm::mat4 view(1.0f);
-    glm::mat4 projection(1.0f);
-
     while (!glfwWindowShouldClose(window))
     {
+        glfwPollEvents();
+
         currentTime = (GLfloat)glfwGetTime();
         deltaTime = currentTime - lastTime;
 
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        frame.Bind();
+
         glEnable(GL_DEPTH_TEST);
 
         do_movement(deltaTime);
@@ -241,30 +178,22 @@ int main()
         glm::mat4 model(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
 
-        view = sceneCamera.getViewMatrix();
-
-        projection = sceneCamera.getProjectionMatrix();
-
         shader.setUniform("model", model);
-        shader.setUniform("view", view);
-        shader.setUniform("projection", projection);
+        shader.setUniform("view", sceneCamera.getViewMatrix());
+        shader.setUniform("projection", sceneCamera.getProjectionMatrix());
 
         ourModel.Draw(shader);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        frame.Bind(0);
         glDisable(GL_DEPTH_TEST);
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        frameShader.Use();
-        glBindVertexArray(quadVAO);
-        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        frame.Draw(frameShader);
 
         lastTime = currentTime;
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
     glfwTerminate();

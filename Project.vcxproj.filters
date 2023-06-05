@@ -24,16 +24,25 @@
     <ClCompile Include="WindowGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glModules\Camera.cpp">
+    <ClCompile Include="engine\objects\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glModules\Shader.cpp">
+    <ClCompile Include="engine\graphic\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glModules\Mesh.cpp">
+    <ClCompile Include="engine\graphic\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glModules\Model.cpp">
+    <ClCompile Include="engine\graphic\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\screen\Frame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\shell\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\shell\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,16 +65,25 @@
     <ClInclude Include="include\GL\wglew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glModules\Camera.h">
+    <ClInclude Include="engine\objects\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glModules\Shader.h">
+    <ClInclude Include="engine\graphic\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glModules\Mesh.h">
+    <ClInclude Include="engine\graphic\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="glModules\Model.h">
+    <ClInclude Include="engine\graphic\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\screen\Frame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\shell\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\shell\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

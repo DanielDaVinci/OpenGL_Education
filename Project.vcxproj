@@ -11,23 +11,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="glModules\Camera.cpp" />
-    <ClCompile Include="glModules\Shader.cpp" />
-    <ClCompile Include="glModules\Mesh.cpp" />
-    <ClCompile Include="glModules\Model.cpp" />
+    <ClCompile Include="engine\shell\Application.cpp" />
+    <ClCompile Include="engine\screen\Frame.cpp" />
+    <ClCompile Include="engine\objects\Camera.cpp" />
+    <ClCompile Include="engine\graphic\Shader.cpp" />
+    <ClCompile Include="engine\graphic\Mesh.cpp" />
+    <ClCompile Include="engine\graphic\Model.cpp" />
+    <ClCompile Include="engine\shell\Window.cpp" />
     <ClCompile Include="WindowGL.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="glModules\Camera.h" />
+    <ClInclude Include="engine\shell\Application.h" />
+    <ClInclude Include="engine\screen\Frame.h" />
+    <ClInclude Include="engine\objects\Camera.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="glModules\Shader.h" />
-    <ClInclude Include="glModules\Mesh.h" />
-    <ClInclude Include="glModules\Model.h" />
+    <ClInclude Include="engine\graphic\Shader.h" />
+    <ClInclude Include="engine\graphic\Mesh.h" />
+    <ClInclude Include="engine\graphic\Model.h" />
+    <ClInclude Include="engine\shell\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\strokeShader.frag" />
