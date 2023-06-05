@@ -36,4 +36,5 @@ private:
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> loadMaterialTextures(aiMaterial* material, aiTextureType type, string typeName);
 	unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
+
 };

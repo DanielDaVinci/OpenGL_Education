@@ -12,6 +12,7 @@
 class Frame
 {
 private:
+
 	GLuint width, height;
 
 	GLuint frameBuffer;
@@ -19,14 +20,19 @@ private:
 
 	GLuint RBO;
 	GLuint VAO, VBO;
+
 public:
+
 	Frame(GLuint width, GLuint height);
 
 	void Bind(GLint value = 1);
 	void Draw(Shader shader);
+
 private:
+
 	void genColorBuffer(GLuint width, GLuint height);
 	void genRBO(GLuint width, GLuint height);
 	void genFrameTexture();
+
 };
 

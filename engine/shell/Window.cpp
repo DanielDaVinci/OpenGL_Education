@@ -19,6 +19,7 @@ Window::~Window()
 
 void Window::Start()
 {
+	setProperties();
 	launchEventHandler();
 }
 
@@ -66,6 +67,18 @@ pair<GLint, GLint> Window::getFrameBufferSize()
 	return make_pair(width, height);
 }
 
+void Window::setResizable(GLint value)
+{
+	resizable = value;
+	setWindowHint(GLFW_RESIZABLE, value);
+}
+
+void Window::setInputMode(GLint value)
+{
+	inputMode = value;
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, inputMode);
+}
+
 void Window::launchEventHandler()
 {
 	onCreate();
@@ -89,7 +102,8 @@ void Window::launchEventHandler()
 
 void Window::setProperties()
 {
-
+	setResizable(resizable);
+	setInputMode(inputMode);
 }
 
 void Window::calcDeltaTime()

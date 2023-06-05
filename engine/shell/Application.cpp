@@ -31,7 +31,6 @@ void Application::setCallbacksOnWindow(Window* window)
 
 void Application::KeyCallback(GLFWwindow* glfwWindow, int key, int scancode, int action, int mode)
 {
-	//cout << "asd" << endl;
 	for (auto window : *windows)
 	{
 		if (window->glfwWindow != glfwWindow)

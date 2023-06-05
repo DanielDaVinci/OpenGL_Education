@@ -1,5 +1,4 @@
-#ifndef WINDOW
-#define WINDOW
+#pragma once
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -18,20 +17,22 @@ using namespace std;
 class Window
 {
 private:
+
 	GLFWwindow* glfwWindow = nullptr;
 
 	string name;
 	GLuint width, height;
 	GLint x, y;
 
-	GLboolean resizable = GL_TRUE;
-	GLboolean inputMode = GL_FALSE;
+	GLint resizable = GL_TRUE;
+	GLint inputMode = GLFW_CURSOR_DISABLED;
 
 public:
 
 	GLdouble deltaTime;
 
 public:
+
 	Window(string name = "Window", GLuint width = 800, GLuint height = 600, GLint x = 0, GLint y = 0);
 	~Window();
 
@@ -48,7 +49,11 @@ public:
 	pair<GLdouble, GLdouble> getCursorPosition();
 	pair<GLint, GLint> getFrameBufferSize();
 
+	void setResizable(GLint value);
+	void setInputMode(GLint value);
+
 protected:
+
 	// Lifecycle
 	void launchEventHandler();
 
@@ -62,18 +67,20 @@ protected:
 		// Mouse
 	virtual void onMouseDrag(GLdouble x, GLdouble y) {};
 	virtual void onMouseScroll(GLdouble xOffset, GLdouble yOffset) {};
-	// KeyBoard
+		// KeyBoard
 	virtual void onKeyDown(GLint key, GLint scanCode, GLint mode) {};
 	virtual void onKeyUp(GLint key, GLint scanCode, GLint mode) {};
 
 private:
+
 	void setProperties();
 
 	void calcDeltaTime();
+
 private:
+
 	friend Application;
+
 };
 
 #include "Application.h"
-
-#endif

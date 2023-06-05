@@ -55,11 +55,11 @@ void MainWindow::onCreate()
 
 void MainWindow::onRender()
 {
+    movement();
+
     frame->Bind();
 
     glEnable(GL_DEPTH_TEST);
-
-    movement();
 
     setName(to_string(1.0f / deltaTime));
 
@@ -68,17 +68,6 @@ void MainWindow::onRender()
 
     shader->Use();
 
-    //shader.setUniform("spotLight.position", sceneCamera.getPosition());
-    //shader.setUniform("spotLight.direction", sceneCamera.getFrontDirection());
-    //shader.setUniform("spotLight.innerAngle", glm::cos(glm::radians(12.5f)));
-    //shader.setUniform("spotLight.outerAngle", glm::cos(glm::radians(17.5f)));
-    //shader.setUniform("spotLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-    //shader.setUniform("spotLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-    //shader.setUniform("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-    //shader.setUniform("spotLight.constant", 1.0f);
-    //shader.setUniform("spotLight.linear", 0.22f);
-    //shader.setUniform("spotLight.constant", 0.20f);
-
     shader->setUniform("pointLight.position", sceneCamera->getPosition());
     shader->setUniform("pointLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
     shader->setUniform("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
@@ -86,7 +75,6 @@ void MainWindow::onRender()
     shader->setUniform("pointLight.constant", 1.0f);
     shader->setUniform("pointLight.linear", 0.22f);
     shader->setUniform("pointLight.constant", 0.20f);
-
     shader->setUniform("viewPos", sceneCamera->getPosition());
 
     glm::mat4 model(1.0f);

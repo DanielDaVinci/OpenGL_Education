@@ -27,6 +27,7 @@ private:
 	GLuint fragmentShader;
 
 public:
+
 	Shader(const GLchar* vertexPath = nullptr, const GLchar* fragmentPath = nullptr);
 	
 	void setProgram();
@@ -47,8 +48,11 @@ public:
 	void setUniform(const GLchar* name, const GLfloat* value);
 	void setUniform(const GLchar* name, glm::vec3 value);
 	void setUniform(const GLchar* name, glm::mat4 value);
+
 private:
+
 	static string getCodeFromFile(const GLchar* path);
 	static GLuint getShader(GLenum type, const GLchar* source);
+
 };
 

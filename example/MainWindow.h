@@ -8,6 +8,7 @@
 class MainWindow: public Window
 {
 private:
+
 	Camera* sceneCamera = nullptr;
 
 	Frame* frame = nullptr;
@@ -21,21 +22,21 @@ private:
 	vector<GLboolean>* keys = nullptr;
 
 public:
+
 	MainWindow();
 	~MainWindow();
 
 protected:
+
 	void movement();
 
 	void onCreate();
 	void onRender();
 
-	// Events
-		// Mouse
 	void onMouseDrag(GLdouble x, GLdouble y);
 	void onMouseScroll(GLdouble xOffset, GLdouble yOffset);
-	// KeyBoard
 	void onKeyDown(GLint key, GLint scanCode, GLint mode);
 	void onKeyUp(GLint key, GLint scanCode, GLint mode);
+
 };
 

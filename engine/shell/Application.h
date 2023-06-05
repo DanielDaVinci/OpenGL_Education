@@ -1,5 +1,4 @@
-#ifndef APPLICATION
-#define APPLICATION
+#pragma once
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -19,6 +18,7 @@ private:
 	vector<Window*>* windows;
 
 public:
+
 	Application();
 	~Application();
 
@@ -50,6 +50,5 @@ private:
 		static void MousePositionCallback(GLFWwindow* window, double xpos, double ypos);
 		static void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 	};
-};
 
-#endif 
+};
