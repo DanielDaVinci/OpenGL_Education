@@ -1,4 +1,5 @@
-#pragma once
+#ifndef APPLICATION
+#define APPLICATION
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -15,7 +16,7 @@ class Application
 {
 private:
 
-	vector<Window*> windows;
+	vector<Window*>* windows;
 
 public:
 	Application();
@@ -28,16 +29,18 @@ private:
 	void setCallbacksOnWindow(Window* window);
 
 	// Callbacks
-	void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
-	void MousePositionCallback(GLFWwindow* window, double xpos, double ypos);
-	void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+	void KeyCallback(GLFWwindow* glfwWindow, int key, int scancode, int action, int mode);
+	void MousePositionCallback(GLFWwindow* glfwWindow, double xpos, double ypos);
+	void MouseScrollCallback(GLFWwindow* glfwWindow, double xoffset, double yoffset);
 
 	class GLFWCallbackWrapper
 	{
-	private:
+	public:
 		static Application* s_application;
 	public:
 		GLFWCallbackWrapper() = delete;
+		GLFWCallbackWrapper(const GLFWCallbackWrapper&) = delete;
+		GLFWCallbackWrapper(GLFWCallbackWrapper&&) = delete;
 		~GLFWCallbackWrapper() = delete;
 
 		static void setApplication(Application* application);
@@ -49,4 +52,4 @@ private:
 	};
 };
 
-Application* Application::GLFWCallbackWrapper::s_application = nullptr;
+#endif 

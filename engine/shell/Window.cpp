@@ -14,12 +14,17 @@ Window::Window(string name, GLuint width, GLuint height, GLint x, GLint y)
 
 Window::~Window()
 {
-	glfwTerminate();
+	
 }
 
 void Window::Start()
 {
 	launchEventHandler();
+}
+
+void Window::Close()
+{
+	glfwSetWindowShouldClose(glfwWindow, GL_TRUE);
 }
 
 void Window::setWindowHint(GLint hint, GLint value)
@@ -65,16 +70,14 @@ void Window::launchEventHandler()
 {
 	onCreate();
 	
-	process = GL_TRUE;
-
-	while (process)
+	while (!glfwWindowShouldClose(glfwWindow))
 	{
 		onBeforeRender();
 
 		glfwPollEvents();
 		calcDeltaTime();
 
-		onRander();
+		onRender();
 
 		glfwSwapBuffers(glfwWindow);
 
@@ -84,28 +87,7 @@ void Window::launchEventHandler()
 	onTerminate();
 }
 
-void Window::onMouseDrag(GLdouble x, GLdouble y)
-{
-}
-
-void Window::onMouseScroll(GLdouble xOffset, GLdouble yOffset)
-{
-}
-
-void Window::onKeyDown(GLint key, GLint scanCode, GLint mode)
-{
-}
-
-void Window::onKeyUp(GLint key, GLint scanCode, GLint mode)
-{
-}
-
 void Window::setProperties()
-{
-
-}
-
-void Window::setEvents()
 {
 
 }

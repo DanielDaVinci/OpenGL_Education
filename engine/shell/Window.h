@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WINDOW
+#define WINDOW
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -23,8 +24,6 @@ private:
 	GLuint width, height;
 	GLint x, y;
 
-	GLboolean process = GL_TRUE;
-
 	GLboolean resizable = GL_TRUE;
 	GLboolean inputMode = GL_FALSE;
 
@@ -37,6 +36,7 @@ public:
 	~Window();
 
 	void Start();
+	void Close();
 
 	void setWindowHint(GLint hint, GLint value);
 
@@ -54,22 +54,20 @@ protected:
 
 	virtual void onCreate() {};
 	virtual void onBeforeRender() {};
-	virtual void onRander() {};
+	virtual void onRender() {};
 	virtual void onAfterRender() {};
 	virtual void onTerminate() {};
 
 	// Events
 		// Mouse
-	virtual void onMouseDrag(GLdouble x, GLdouble y);
-	virtual void onMouseScroll(GLdouble xOffset, GLdouble yOffset);
-		// KeyBoard
-	virtual void onKeyDown(GLint key, GLint scanCode, GLint mode);
-	virtual void onKeyUp(GLint key, GLint scanCode, GLint mode);
+	virtual void onMouseDrag(GLdouble x, GLdouble y) {};
+	virtual void onMouseScroll(GLdouble xOffset, GLdouble yOffset) {};
+	// KeyBoard
+	virtual void onKeyDown(GLint key, GLint scanCode, GLint mode) {};
+	virtual void onKeyUp(GLint key, GLint scanCode, GLint mode) {};
 
 private:
 	void setProperties();
-
-	void setEvents();
 
 	void calcDeltaTime();
 private:
@@ -78,3 +76,4 @@ private:
 
 #include "Application.h"
 
+#endif

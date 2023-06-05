@@ -45,6 +45,9 @@
     <ClCompile Include="engine\shell\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="example\MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GLFW\glfw3.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine\shell\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="example\MainWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

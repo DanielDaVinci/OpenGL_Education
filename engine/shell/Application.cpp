@@ -2,68 +2,77 @@
 
 Application::Application()
 {
+	glfwInit();
 	GLFWCallbackWrapper::setApplication(this);
+
+	windows = new vector<Window*>();
 }
+
+Application* Application::GLFWCallbackWrapper::s_application = nullptr;
 
 Application::~Application()
 {
-	windows.clear();
+	windows->clear();
+	glfwTerminate();
 }
 
 void Application::addWindow(Window* window)
 {
-	windows.push_back(window);
+	windows->push_back(window);
 	setCallbacksOnWindow(window);
+	window->Start();
 }
 
 void Application::setCallbacksOnWindow(Window* window)
 {
+	GLFWCallbackWrapper::setApplication(this);
 	GLFWCallbackWrapper::setCallbacksOnWindow(window->glfwWindow);
 }
 
-void Application::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void Application::KeyCallback(GLFWwindow* glfwWindow, int key, int scancode, int action, int mode)
 {
-	for (int i = 0; i < windows.size(); i++)
+	//cout << "asd" << endl;
+	for (auto window : *windows)
 	{
-		if (windows[i]->glfwWindow != window)
+		if (window->glfwWindow != glfwWindow)
 			continue;
 
 		if (action == GLFW_PRESS)
-			windows[i]->onKeyDown(key, scancode, mode);
+			window->onKeyDown(key, scancode, mode);
 		else if (action == GLFW_RELEASE)
-			windows[i]->onKeyUp(key, scancode, mode);
+			window->onKeyUp(key, scancode, mode);
 
 		break;
 	}
 }
 
-void Application::MousePositionCallback(GLFWwindow* window, double xpos, double ypos)
+void Application::MousePositionCallback(GLFWwindow* glfwWindow, double xpos, double ypos)
 {
-	for (int i = 0; i < windows.size(); i++)
+	for (auto window : *windows)
 	{
-		if (windows[i]->glfwWindow != window)
+		if (window->glfwWindow != glfwWindow)
 			continue;
 
-		windows[i]->onMouseDrag(xpos, ypos);
+		window->onMouseDrag(xpos, ypos);
 		break;
 	}
 }
 
-void Application::MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void Application::MouseScrollCallback(GLFWwindow* glfwWindow, double xoffset, double yoffset)
 {
-	for (int i = 0; i < windows.size(); i++)
+	for (auto window : *windows)
 	{
-		if (windows[i]->glfwWindow != window)
+		if (window->glfwWindow != glfwWindow)
 			continue;
 
-		windows[i]->onMouseScroll(xoffset, yoffset);
+		window->onMouseScroll(xoffset, yoffset);
 		break;
 	}
 }
 
 void Application::GLFWCallbackWrapper::setApplication(Application* application)
 {
-	GLFWCallbackWrapper::s_application = s_application;
+	Application::GLFWCallbackWrapper::s_application = application;
 }
 
 void Application::GLFWCallbackWrapper::setCallbacksOnWindow(GLFWwindow* window)
