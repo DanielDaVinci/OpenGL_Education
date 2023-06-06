@@ -19,7 +19,7 @@ private:
 
 	Model* mainModel = nullptr;
 
-	vector<GLboolean>* keys = nullptr;
+	vector<GLboolean> keys;
 
 public:
 
@@ -31,6 +31,7 @@ protected:
 	void movement();
 
 	void onCreate();
+	void onBeforeRender();
 	void onRender();
 
 	void onMouseDrag(GLdouble x, GLdouble y);

@@ -19,6 +19,12 @@
     <ClCompile Include="engine\graphic\Model.cpp" />
     <ClCompile Include="engine\shell\Window.cpp" />
     <ClCompile Include="example\MainWindow.cpp" />
+    <ClCompile Include="include\imGUI\imgui.cpp" />
+    <ClCompile Include="include\imGUI\imgui_draw.cpp" />
+    <ClCompile Include="include\imGUI\imgui_impl_glfw.cpp" />
+    <ClCompile Include="include\imGUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="include\imGUI\imgui_tables.cpp" />
+    <ClCompile Include="include\imGUI\imgui_widgets.cpp" />
     <ClCompile Include="WindowGL.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +42,15 @@
     <ClInclude Include="engine\graphic\Model.h" />
     <ClInclude Include="engine\shell\Window.h" />
     <ClInclude Include="example\MainWindow.h" />
+    <ClInclude Include="include\imGUI\imconfig.h" />
+    <ClInclude Include="include\imGUI\imgui.h" />
+    <ClInclude Include="include\imGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="include\imGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="include\imGUI\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="include\imGUI\imgui_internal.h" />
+    <ClInclude Include="include\imGUI\imstb_rectpack.h" />
+    <ClInclude Include="include\imGUI\imstb_textedit.h" />
+    <ClInclude Include="include\imGUI\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\strokeShader.frag" />

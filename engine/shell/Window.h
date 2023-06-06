@@ -8,6 +8,10 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 
+#include <imGUI/imgui.h>
+#include <imGUI/imgui_impl_glfw.h>
+#include <imGUI/imgui_impl_opengl3.h>
+
 #include <iostream>
 
 class Application;
@@ -25,7 +29,7 @@ private:
 	GLint x, y;
 
 	GLint resizable = GL_TRUE;
-	GLint inputMode = GLFW_CURSOR_DISABLED;
+	GLint inputMode = GLFW_CURSOR_NORMAL;
 
 public:
 

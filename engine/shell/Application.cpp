@@ -20,6 +20,7 @@ void Application::addWindow(Window* window)
 {
 	windows->push_back(window);
 	setCallbacksOnWindow(window);
+
 	window->Start();
 }
 

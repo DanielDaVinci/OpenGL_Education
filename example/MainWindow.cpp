@@ -7,7 +7,10 @@ MainWindow::MainWindow(): Window()
 	setWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	setWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    keys = new vector<GLboolean>(1024, 0);
+    glewExperimental = GL_TRUE;
+    glewInit();
+
+    keys = vector<GLboolean>(1024, 0);
 }
 
 MainWindow::~MainWindow()
@@ -18,29 +21,24 @@ MainWindow::~MainWindow()
     delete strokeShader;
     delete frameShader;
     delete mainModel;
-    delete keys;
 }
 
 void MainWindow::movement()
 {
     GLfloat cameraSpeed = 5.0f * deltaTime;
-    if ((*keys)[GLFW_KEY_W])
+    if (keys[GLFW_KEY_W])
         sceneCamera->setPosition(sceneCamera->getPosition() + sceneCamera->getFrontDirection() * cameraSpeed);
-    if ((*keys)[GLFW_KEY_S])
+    if (keys[GLFW_KEY_S])
         sceneCamera->setPosition(sceneCamera->getPosition() - sceneCamera->getFrontDirection() * cameraSpeed);
-    if ((*keys)[GLFW_KEY_A])
+    if (keys[GLFW_KEY_A])
         sceneCamera->setPosition(sceneCamera->getPosition() - sceneCamera->getRightDirection() * cameraSpeed);
-    if ((*keys)[GLFW_KEY_D])
+    if (keys[GLFW_KEY_D])
         sceneCamera->setPosition(sceneCamera->getPosition() + sceneCamera->getRightDirection() * cameraSpeed);
 }
 
 void MainWindow::onCreate()
 {
-	glewExperimental = GL_TRUE;
-	glewInit();
-
 	auto sizes = getFrameBufferSize();
-	glViewport(0, 0, sizes.first, sizes.second);
     
     sceneCamera = new Camera(800, 600, 45.0f, { 0.0f, 0.0f, 0.0f }, { 0.0f, -90.0f, 0.0f });
 
@@ -92,7 +90,42 @@ void MainWindow::onRender()
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    frame->Draw(*frameShader);
+    //frame->Draw(*frameShader);
+}
+
+void MainWindow::onBeforeRender()
+{
+
+    ImGui::Begin("My Scene");
+
+    //ImGui::SetWindowSize(ImVec2(300, 300));
+
+    const float window_width = ImGui::GetContentRegionAvail().x;
+    const float window_height = ImGui::GetContentRegionAvail().y;
+
+    frame->Resize(window_width, window_height);
+    glViewport(0, 0, window_width, window_height);
+    sceneCamera->setScreenWidth(window_width);
+    sceneCamera->setScreenHeight(window_height);
+
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+
+    ImGui::GetWindowDrawList()->AddImage(
+        (void*)frame->getTextureID(),
+        ImVec2(pos.x, pos.y),
+        ImVec2(pos.x + window_width, pos.y + window_height),
+        ImVec2(0, 1),
+        ImVec2(1, 0)
+    );
+
+    ImGui::End();
+    /*ImGui::Begin("Another Window");
+        ImGui::BeginChild("GameRender");
+            ImVec2 wsize = ImGui::GetWindowSize();
+            GLuint test = frame->getTextureID();
+            ImGui::Image((ImTextureID)&test, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::EndChild();
+    ImGui::End();*/
 }
 
 void MainWindow::onMouseDrag(GLdouble x, GLdouble y)
@@ -129,10 +162,10 @@ void MainWindow::onKeyDown(GLint key, GLint scanCode, GLint mode)
     if (key == GLFW_KEY_ESCAPE)
         Close();
 
-    (*keys)[key] = GL_TRUE;
+    keys[key] = GL_TRUE;
 }
 
 void MainWindow::onKeyUp(GLint key, GLint scanCode, GLint mode)
 {
-    (*keys)[key] = GL_FALSE;
+    keys[key] = GL_FALSE;
 }

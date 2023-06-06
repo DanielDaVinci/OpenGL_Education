@@ -28,6 +28,10 @@ public:
 	void Bind(GLint value = 1);
 	void Draw(Shader shader);
 
+	void Resize(GLuint width, GLuint height);
+
+	GLuint getTextureID();
+
 private:
 
 	void genColorBuffer(GLuint width, GLuint height);

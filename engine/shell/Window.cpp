@@ -10,6 +10,7 @@ Window::Window(string name, GLuint width, GLuint height, GLint x, GLint y)
 
 	glfwWindow = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
 	glfwMakeContextCurrent(glfwWindow);
+	glfwSwapInterval(1);
 }
 
 Window::~Window()
@@ -82,20 +83,50 @@ void Window::setInputMode(GLint value)
 void Window::launchEventHandler()
 {
 	onCreate();
+
+	glfwMakeContextCurrent(glfwWindow);
+
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; 
+
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
+	ImGui_ImplOpenGL3_Init("#version 330 core");
 	
 	while (!glfwWindowShouldClose(glfwWindow))
 	{
-		onBeforeRender();
 
 		glfwPollEvents();
 		calcDeltaTime();
 
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		ImGui::NewFrame();
+
+		onBeforeRender();
+
+		//ImGui::EndFrame();
+
+		ImGui::Render();
+
 		onRender();
+
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(glfwWindow);
 
 		onAfterRender();
 	}
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	onTerminate();
 }
