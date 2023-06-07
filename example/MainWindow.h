@@ -31,7 +31,6 @@ protected:
 	void movement();
 
 	void onCreate();
-	void onBeforeRender();
 	void onGUI();
 	void onRender();
 

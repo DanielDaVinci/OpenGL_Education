@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 
-MainWindow::MainWindow(): Window()
+MainWindow::MainWindow(): Window("Window", 1200, 800)
 {
 	setWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	setWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
