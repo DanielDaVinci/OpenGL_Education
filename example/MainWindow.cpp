@@ -59,13 +59,12 @@ void MainWindow::onRender()
 
     glEnable(GL_DEPTH_TEST);
 
-    setName(to_string(1.0f / deltaTime));
+    //setName(to_string(int(1.0f / deltaTime)));
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader->Use();
-
     shader->setUniform("pointLight.position", sceneCamera->getPosition());
     shader->setUniform("pointLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
     shader->setUniform("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
@@ -85,20 +84,11 @@ void MainWindow::onRender()
     mainModel->Draw(*shader);
 
     frame->Bind(0);
-    glDisable(GL_DEPTH_TEST);
-
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    //frame->Draw(*frameShader);
 }
 
-void MainWindow::onBeforeRender()
+void MainWindow::onGUI()
 {
-
     ImGui::Begin("My Scene");
-
-    //ImGui::SetWindowSize(ImVec2(300, 300));
 
     const float window_width = ImGui::GetContentRegionAvail().x;
     const float window_height = ImGui::GetContentRegionAvail().y;
@@ -118,36 +108,32 @@ void MainWindow::onBeforeRender()
         ImVec2(1, 0)
     );
 
+    ImVec2 vec2 = ImGui::GetCursorScreenPos();
+    setName(to_string(vec2.x) + " " + to_string(vec2.y));
+
     ImGui::End();
-    /*ImGui::Begin("Another Window");
-        ImGui::BeginChild("GameRender");
-            ImVec2 wsize = ImGui::GetWindowSize();
-            GLuint test = frame->getTextureID();
-            ImGui::Image((ImTextureID)&test, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
-        ImGui::EndChild();
-    ImGui::End();*/
 }
 
 void MainWindow::onMouseDrag(GLdouble x, GLdouble y)
 {
-    static GLdouble lastX = 400, lastY = 300;
-
-    GLfloat xoffset = x - lastX;
-    GLfloat yoffset = lastY - y;
-    lastX = x;
-    lastY = y;
-
-    GLfloat sensitivity = 0.05f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    glm::vec3 angles = sceneCamera->getAngle();
-    angles.x += yoffset;
-    angles.y += xoffset;
-
-    angles.x = glm::clamp(angles.x, -89.0f, 89.0f);
-
-    sceneCamera->setAngle(angles);
+//    static GLdouble lastX = 400, lastY = 300;
+//
+//    GLfloat xoffset = x - lastX;
+//    GLfloat yoffset = lastY - y;
+//    lastX = x;
+//    lastY = y;
+//
+//    GLfloat sensitivity = 0.05f;
+//    xoffset *= sensitivity;
+//    yoffset *= sensitivity;
+//
+//    glm::vec3 angles = sceneCamera->getAngle();
+//    angles.x += yoffset;
+//    angles.y += xoffset;
+//
+//    angles.x = glm::clamp(angles.x, -89.0f, 89.0f);
+//
+//    sceneCamera->setAngle(angles);
 }
 
 void MainWindow::onMouseScroll(GLdouble xOffset, GLdouble yOffset)

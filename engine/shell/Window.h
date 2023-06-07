@@ -63,6 +63,7 @@ protected:
 
 	virtual void onCreate() {};
 	virtual void onBeforeRender() {};
+	virtual void onGUI() {};
 	virtual void onRender() {};
 	virtual void onAfterRender() {};
 	virtual void onTerminate() {};

@@ -32,6 +32,7 @@ protected:
 
 	void onCreate();
 	void onBeforeRender();
+	void onGUI();
 	void onRender();
 
 	void onMouseDrag(GLdouble x, GLdouble y);

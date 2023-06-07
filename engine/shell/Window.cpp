@@ -97,6 +97,7 @@ void Window::launchEventHandler()
 	
 	while (!glfwWindowShouldClose(glfwWindow))
 	{
+		onBeforeRender();
 
 		glfwPollEvents();
 		calcDeltaTime();
@@ -108,15 +109,11 @@ void Window::launchEventHandler()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		ImGui::NewFrame();
-
-		onBeforeRender();
-
-		//ImGui::EndFrame();
+		onGUI();
+		ImGui::EndFrame();
 
 		ImGui::Render();
-
 		onRender();
-
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(glfwWindow);
