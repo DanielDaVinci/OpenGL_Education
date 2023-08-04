@@ -74,17 +74,18 @@ uniform sampler2D texture_specular5;
 uniform sampler2D texture_specular6;
 
 uniform vec3 viewPos;
+uniform samplerCube skybox;
 
 void main()
 {
-    vec3 norm = normalize(Normal);
+    vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
     vec3 result = vec3(0.0);
 
-    result += max(CalcDirLight(dirLight, norm, viewDir), 0);
-    result += max(CalcPointLight(pointLight, norm, FragPos, viewDir), 0);    
-    result += max(CalcSpotLight(spotLight, norm, FragPos, viewDir), 0);    
+    result += max(CalcDirLight(dirLight, normal, viewDir), 0);
+    result += max(CalcPointLight(pointLight, normal, FragPos, viewDir), 0);    
+    result += max(CalcSpotLight(spotLight, normal, FragPos, viewDir), 0);    
     
     color = vec4(result, 1.0);
 } 
@@ -116,7 +117,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);
-    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoord));
+    vec3 specular = light.specular * spec * (texture(material.specular, TexCoord).rgb);
 
     float distance    = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + 

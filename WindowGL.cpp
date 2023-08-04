@@ -83,6 +83,44 @@ void do_movement(GLfloat deltaTime)
         sceneCamera.setPosition(sceneCamera.getPosition() + sceneCamera.getRightDirection() * cameraSpeed);
 }
 
+
+
+unsigned int loadCubeMap(vector<string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    unsigned char* data;
+
+    for (GLuint i = 0; i < faces.size(); i++)
+    {
+        data = SOIL_load_image(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        }
+        else
+        {
+            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+        }
+
+        SOIL_free_image_data(data);
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}
+
+
+
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 int main()
@@ -117,8 +155,6 @@ int main()
     glfwGetFramebufferSize(window, &winWidth, &winHeight);
     glViewport(0, 0, winWidth, winHeight);
 
-    // NEW
-
     unsigned int framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -145,19 +181,86 @@ int main()
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // ---------------
-
-
     glEnable(GL_DEPTH_TEST);
 
     Shader shader("Data/Shaders/shader.vs", "Data/Shaders/shader.frag");
     Shader strokeShader("Data/Shaders/strokeShader.vs", "Data/Shaders/strokeShader.frag");
+    Shader skyboxShader("Data/Shaders/skyboxShader.vs", "Data/Shaders/skyboxShader.frag");
     Shader frameShader("Data/Shaders/frameShader.vs", "Data/Shaders/frameShader.frag");
 
     Model ourModel("resources/objects/backpack/backpack.obj");
-    Model secondModel = ourModel;
 
-    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+    // Cube Map
+
+    vector<std::string> faces
+    {
+        "Data/Textures/skybox/right.jpg",
+        "Data/Textures/skybox/left.jpg",
+        "Data/Textures/skybox/top.jpg",
+        "Data/Textures/skybox/bottom.jpg",
+        "Data/Textures/skybox/front.jpg",
+        "Data/Textures/skybox/back.jpg"
+    };
+    unsigned int cubemapTexture = loadCubeMap(faces);
+
+    float skyboxVertices[] = {
+        // positions          
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f
+    };
+
+    unsigned int skyboxVAO, skyboxVBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    float quadVertices[] = {
         // positions   // texCoords
         -1.0f,  1.0f,  0.0f, 1.0f,
         -1.0f, -1.0f,  0.0f, 0.0f,
@@ -171,9 +274,12 @@ int main()
     unsigned int quadVAO, quadVBO;
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);
+
     glBindVertexArray(quadVAO);
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
@@ -181,15 +287,6 @@ int main()
 
     frameShader.Use();
     frameShader.setUniform("screenTexture", 0);
-
-    //for (int i = 0; i < secondModel.meshes.size(); i++)
-    //{
-    //    for (int j = 0; j < secondModel.meshes[i].indices.size(); j++)
-    //    {
-    //        unsigned int index = secondModel.meshes[i].indices[j];
-    //        secondModel.meshes[i].vertices[index].Position += secondModel.meshes[i].vertices[j].Normal * 2.0f;
-    //    }
-    //}
 
     GLfloat currentTime = glfwGetTime();
     GLfloat lastTime = currentTime;
@@ -214,6 +311,8 @@ int main()
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Model
 
         shader.Use();
 
@@ -240,9 +339,7 @@ int main()
 
         glm::mat4 model(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
-
         view = sceneCamera.getViewMatrix();
-
         projection = sceneCamera.getProjectionMatrix();
 
         shader.setUniform("model", model);
@@ -250,6 +347,24 @@ int main()
         shader.setUniform("projection", projection);
 
         ourModel.Draw(shader);
+
+        // SkyBox
+
+        glDepthFunc(GL_LEQUAL);
+        skyboxShader.Use();
+
+        view = glm::mat4(glm::mat3(sceneCamera.getViewMatrix()));
+        projection = sceneCamera.getProjectionMatrix();
+
+        skyboxShader.setUniform("view", view);
+        skyboxShader.setUniform("projection", projection);
+
+        glBindVertexArray(skyboxVAO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDepthFunc(GL_LESS);
+
+        // Frame
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glDisable(GL_DEPTH_TEST);
