@@ -74,5 +74,7 @@
     <None Include="Data\Shaders\shader.vs" />
     <None Include="Data\Shaders\strokeShader.frag" />
     <None Include="Data\Shaders\strokeShader.vs" />
+    <None Include="Data\Shaders\frameShader.frag" />
+    <None Include="Data\Shaders\frameShader.vs" />
   </ItemGroup>
 </Project>

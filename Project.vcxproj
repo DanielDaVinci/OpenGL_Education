@@ -30,6 +30,10 @@
     <ClInclude Include="glModules\Model.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\Shaders\frameShader.frag" />
+    <None Include="Data\Shaders\frameShader.vs" />
+    <None Include="Data\Shaders\skyboxShader.frag" />
+    <None Include="Data\Shaders\skyboxShader.vs" />
     <None Include="Data\Shaders\strokeShader.frag" />
     <None Include="Data\Shaders\shader.frag" />
     <None Include="Data\Shaders\shader.vs" />
