@@ -130,6 +130,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Window", nullptr, nullptr);
@@ -148,50 +149,66 @@ int main()
     lastY = ypos;
 
     glewExperimental = GL_TRUE;
-
     glewInit();
+    
+    glEnable(GL_DEPTH_TEST);
 
     int winWidth, winHeight;
     glfwGetFramebufferSize(window, &winWidth, &winHeight);
     glViewport(0, 0, winWidth, winHeight);
 
+    // configure MSAA framebuffer
     unsigned int framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-    unsigned int texColorBuffer;
-    glGenTextures(1, &texColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
-
+    // create a multisampled color attachment texture
+    unsigned int textureColorBufferMultiSampled;
+    glGenTextures(1, &textureColorBufferMultiSampled);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, WIDTH, HEIGHT, GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled, 0);
+    // create a (also multisampled) renderbuffer object for depth and stencil attachments
     unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, WIDTH, HEIGHT);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    {
+        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    glEnable(GL_DEPTH_TEST);
+    // configure second post-processing framebuffer
+    unsigned int intermediateFBO;
+    glGenFramebuffers(1, &intermediateFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, intermediateFBO);
+    // create a color attachment texture
+    unsigned int screenTexture;
+    glGenTextures(1, &screenTexture);
+    glBindTexture(GL_TEXTURE_2D, screenTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);	// we only need a color buffer
 
-    Shader shader("Data/Shaders/shader.vs", "Data/Shaders/shader.frag");
-    Shader strokeShader("Data/Shaders/strokeShader.vs", "Data/Shaders/strokeShader.frag");
-    Shader skyboxShader("Data/Shaders/skyboxShader.vs", "Data/Shaders/skyboxShader.frag");
-    Shader frameShader("Data/Shaders/frameShader.vs", "Data/Shaders/frameShader.frag");
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        cout << "ERROR::FRAMEBUFFER:: Intermediate framebuffer is not complete!" << endl;
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    Shader shader("Data/Shaders/shader.vert", "Data/Shaders/shader.frag");
+    Shader strokeShader("Data/Shaders/strokeShader.vert", "Data/Shaders/strokeShader.frag");
+    Shader skyboxShader("Data/Shaders/skyboxShader.vert", "Data/Shaders/skyboxShader.frag");
+    Shader frameShader("Data/Shaders/frameShader.vert", "Data/Shaders/frameShader.frag");
 
     Model ourModel("resources/objects/backpack/backpack.obj");
 
     // Cube Map
-
     vector<std::string> faces
     {
         "Data/Textures/skybox/right.jpg",
@@ -285,6 +302,19 @@ int main()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Static matrices
+    unsigned int UBOMatrices;
+    glGenBuffers(1, &UBOMatrices);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBOMatrices, 0, 2 * sizeof(glm::mat4));
+
     frameShader.Use();
     frameShader.setUniform("screenTexture", 0);
 
@@ -294,26 +324,36 @@ int main()
 
     GLfloat rotateSpeed = 90.0f;
 
-    glm::mat4 view(1.0f);
-    glm::mat4 projection(1.0f);
-
     while (!glfwWindowShouldClose(window))
     {
-        currentTime = (GLfloat)glfwGetTime();
+        // Pre-frame
+        currentTime = static_cast<GLfloat>(glfwGetTime());
         deltaTime = currentTime - lastTime;
 
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glEnable(GL_DEPTH_TEST);
-
+        // Input
         do_movement(deltaTime);
 
-        glfwSetWindowTitle(window, to_string(int(1.0f / deltaTime)).c_str());
+        // Render
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Model
+        // Setup View and Projection matrices for all shaders
+        glm::mat4 view = sceneCamera.getViewMatrix();
+        glm::mat4 projection = sceneCamera.getProjectionMatrix();
+        glBindBuffer(GL_UNIFORM_BUFFER, UBOMatrices);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+        // Draw model
         shader.Use();
 
         //shader.setUniform("spotLight.position", sceneCamera.getPosition());
@@ -336,28 +376,16 @@ int main()
         shader.setUniform("pointLight.constant", 0.20f);
 
         shader.setUniform("viewPos", sceneCamera.getPosition());
-
+        
         glm::mat4 model(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
-        view = sceneCamera.getViewMatrix();
-        projection = sceneCamera.getProjectionMatrix();
-
         shader.setUniform("model", model);
-        shader.setUniform("view", view);
-        shader.setUniform("projection", projection);
 
         ourModel.Draw(shader);
 
         // SkyBox
-
         glDepthFunc(GL_LEQUAL);
         skyboxShader.Use();
-
-        view = glm::mat4(glm::mat3(sceneCamera.getViewMatrix()));
-        projection = sceneCamera.getProjectionMatrix();
-
-        skyboxShader.setUniform("view", view);
-        skyboxShader.setUniform("projection", projection);
 
         glBindVertexArray(skyboxVAO);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
@@ -365,16 +393,18 @@ int main()
         glDepthFunc(GL_LESS);
 
         // Frame
-
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
+        glBlitFramebuffer(0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
-
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
 
         frameShader.Use();
         glBindVertexArray(quadVAO);
-        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glBindTexture(GL_TEXTURE_2D, screenTexture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         lastTime = currentTime;
