@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../engine/shell/Window.h"
-#include "../engine/screen/Frame.h"
-#include "../engine/graphic/Model.h"
-#include "../engine/objects/Camera.h"
+#include "../Engine/shell/Window.h"
+#include "../Engine/screen/Frame.h"
+#include "../Engine/graphic/Model.h"
+#include "../Engine/objects/Camera.h"
 
 class MainWindow: public Window
 {

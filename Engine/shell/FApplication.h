@@ -11,16 +11,15 @@
 
 using namespace std;
 
-class Application
+class FApplication
 {
 private:
 
 	vector<Window*>* windows;
 
 public:
-
-	Application();
-	~Application();
+	FApplication();
+	~FApplication();
 
 	void addWindow(Window* window);
 
@@ -36,14 +35,14 @@ private:
 	class GLFWCallbackWrapper
 	{
 	public:
-		static Application* s_application;
+		static FApplication* s_application;
 	public:
 		GLFWCallbackWrapper() = delete;
 		GLFWCallbackWrapper(const GLFWCallbackWrapper&) = delete;
 		GLFWCallbackWrapper(GLFWCallbackWrapper&&) = delete;
 		~GLFWCallbackWrapper() = delete;
 
-		static void setApplication(Application* application);
+		static void setApplication(FApplication* application);
 		static void setCallbacksOnWindow(GLFWwindow* window);
 
 		static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);

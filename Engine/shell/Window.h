@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-class Application;
+class FApplication;
 
 using namespace std;
 
@@ -84,8 +84,6 @@ private:
 
 private:
 
-	friend Application;
+	friend FApplication;
 
 };
-
-#include "Application.h"

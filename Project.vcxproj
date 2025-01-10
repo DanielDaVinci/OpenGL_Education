@@ -11,13 +11,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="engine\shell\Application.cpp" />
-    <ClCompile Include="engine\screen\Frame.cpp" />
-    <ClCompile Include="engine\objects\Camera.cpp" />
-    <ClCompile Include="engine\graphic\Shader.cpp" />
-    <ClCompile Include="engine\graphic\Mesh.cpp" />
-    <ClCompile Include="engine\graphic\Model.cpp" />
-    <ClCompile Include="engine\shell\Window.cpp" />
+    <ClCompile Include="Engine\Editor\REditor.cpp" />
+    <ClCompile Include="Engine\REngine.cpp" />
+    <ClCompile Include="Engine\Runtime\EngineWindow\Data\FEngineWindowParameters.cpp" />
+    <ClCompile Include="Engine\Runtime\EngineWindow\REngineWindow.cpp" />
+    <ClCompile Include="Engine\shell\FApplication.cpp" />
+    <ClCompile Include="Engine\screen\Frame.cpp" />
+    <ClCompile Include="Engine\objects\Camera.cpp" />
+    <ClCompile Include="Engine\graphic\Shader.cpp" />
+    <ClCompile Include="Engine\graphic\Mesh.cpp" />
+    <ClCompile Include="Engine\graphic\Model.cpp" />
+    <ClCompile Include="Engine\shell\Window.cpp" />
     <ClCompile Include="example\MainWindow.cpp" />
     <ClCompile Include="include\imGUI\imgui.cpp" />
     <ClCompile Include="include\imGUI\imgui_draw.cpp" />
@@ -28,19 +32,23 @@
     <ClCompile Include="WindowGL.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\shell\Application.h" />
-    <ClInclude Include="engine\screen\Frame.h" />
-    <ClInclude Include="engine\objects\Camera.h" />
+    <ClInclude Include="Engine\Editor\REditor.h" />
+    <ClInclude Include="Engine\REngine.h" />
+    <ClInclude Include="Engine\Runtime\EngineWindow\Data\FEngineWindowParameters.h" />
+    <ClInclude Include="Engine\Runtime\EngineWindow\REngineWindow.h" />
+    <ClInclude Include="Engine\shell\FApplication.h" />
+    <ClInclude Include="Engine\screen\Frame.h" />
+    <ClInclude Include="Engine\objects\Camera.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="engine\graphic\Shader.h" />
-    <ClInclude Include="engine\graphic\Mesh.h" />
-    <ClInclude Include="engine\graphic\Model.h" />
-    <ClInclude Include="engine\shell\Window.h" />
+    <ClInclude Include="Engine\graphic\Shader.h" />
+    <ClInclude Include="Engine\graphic\Mesh.h" />
+    <ClInclude Include="Engine\graphic\Model.h" />
+    <ClInclude Include="Engine\shell\Window.h" />
     <ClInclude Include="example\MainWindow.h" />
     <ClInclude Include="include\imGUI\imconfig.h" />
     <ClInclude Include="include\imGUI\imgui.h" />
@@ -57,6 +65,24 @@
     <None Include="Data\Shaders\shader.frag" />
     <None Include="Data\Shaders\shader.vs" />
     <None Include="Data\Shaders\strokeShader.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include=".gitignore" />
+    <Content Include="assimp-vc143-mtd.dll" />
+    <Content Include="coredll.dll" />
+    <Content Include="imgui.ini" />
+    <Content Include="library\assimp-vc143-mtd.lib" />
+    <Content Include="library\glew32s.lib" />
+    <Content Include="library\glfw3.lib" />
+    <Content Include="library\glfw3_mt.lib" />
+    <Content Include="library\SOIL.lib" />
+    <Content Include="Project.vcxproj.filters" />
+    <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engine\Programs\" />
+    <Folder Include="Engine\Shaders\" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>Project</ProjectName>

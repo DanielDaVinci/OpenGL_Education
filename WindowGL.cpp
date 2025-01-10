@@ -1,15 +1,29 @@
 #pragma once
 
-#include "engine/shell/Application.h"
+#include "Engine/REngine.h"
+#include "Engine/shell/FApplication.h"
 #include "example/MainWindow.h"
 
 //#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 int main()
 {
-    Application application;
+    Engine = new REngine();
+    
+    Engine->PreInit();
+    Engine->Init();
+    Engine->PostInit();
 
-    application.addWindow(new MainWindow());
+    while (Engine->IsEngineActive())
+    {
+        Engine->PreTick();
+        Engine->Tick();
+        Engine->PostTick();
+    }
+    
+    // FApplication application;
+    //
+    // application.addWindow(new MainWindow());
 
     return 0;
 }

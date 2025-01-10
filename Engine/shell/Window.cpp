@@ -1,5 +1,9 @@
 #include "Window.h"
 
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 Window::Window(string name, GLuint width, GLuint height, GLint x, GLint y)
 {
 	this->name = name;
