@@ -3,16 +3,11 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
-#include <GLM/glm.hpp>
-#include <GLM/gtc/matrix_transform.hpp>
-#include <GLM/gtc/type_ptr.hpp>
+class FShader;
 
-#include "../graphic/Shader.h"
-
-class Frame
+class RFrame
 {
 private:
-
 	GLuint width, height;
 
 	GLuint frameBuffer;
@@ -23,10 +18,10 @@ private:
 
 public:
 
-	Frame(GLuint width, GLuint height);
+	RFrame(GLuint width, GLuint height);
 
 	void Bind(GLint value = 1);
-	void Draw(Shader shader);
+	void Draw(FShader shader);
 
 	void Resize(GLuint width, GLuint height);
 

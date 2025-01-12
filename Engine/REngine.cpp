@@ -32,8 +32,8 @@ void REngine::Init()
 
     // Engine window
     FEngineWindowParameters WindowParameters;
-    WindowParameters.Width = 800;
-    WindowParameters.Height = 600;
+    WindowParameters.Width = 1600;
+    WindowParameters.Height = 1000;
     WindowParameters.bResizable = GL_TRUE;
     WindowParameters.bCursorVisibility = GLFW_CURSOR_NORMAL;
     WindowParameters.SwapInterval = 1;

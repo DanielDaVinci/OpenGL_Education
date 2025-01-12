@@ -1,6 +1,7 @@
-#include "Frame.h"
+#include "RFrame.h"
+#include "../Shader/FShader.h"
 
-Frame::Frame(GLuint width, GLuint height)
+RFrame::RFrame(GLuint width, GLuint height)
 {
     this->width = width;
     this->height = height;
@@ -16,7 +17,7 @@ Frame::Frame(GLuint width, GLuint height)
     genFrameTexture();
 }
 
-void Frame::Bind(GLint value)
+void RFrame::Bind(GLint value)
 {
     if (value == 0)
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -24,7 +25,7 @@ void Frame::Bind(GLint value)
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 }
 
-void Frame::Draw(Shader shader)
+void RFrame::Draw(FShader shader)
 {
     shader.Use();
     glBindVertexArray(VAO);
@@ -32,7 +33,7 @@ void Frame::Draw(Shader shader)
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Frame::Resize(GLuint width, GLuint height)
+void RFrame::Resize(GLuint width, GLuint height)
 {
     this->width = width;
     this->height = height;
@@ -48,12 +49,12 @@ void Frame::Resize(GLuint width, GLuint height)
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
 }
 
-GLuint Frame::getTextureID()
+GLuint RFrame::getTextureID()
 {
     return colorBuffer;
 }
 
-void Frame::genColorBuffer(GLuint width, GLuint height)
+void RFrame::genColorBuffer(GLuint width, GLuint height)
 {
     glGenTextures(1, &colorBuffer);
     glBindTexture(GL_TEXTURE_2D, colorBuffer);
@@ -66,7 +67,7 @@ void Frame::genColorBuffer(GLuint width, GLuint height)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Frame::genRBO(GLuint width, GLuint height)
+void RFrame::genRBO(GLuint width, GLuint height)
 {
     glGenRenderbuffers(1, &RBO);
     glBindRenderbuffer(GL_RENDERBUFFER, RBO);
@@ -79,7 +80,7 @@ void Frame::genRBO(GLuint width, GLuint height)
         std::cout << "ERROR::FRAMEBUFFER::Framebuffer is not complete" << std::endl;
 }
 
-void Frame::genFrameTexture()
+void RFrame::genFrameTexture()
 {
     float vertices[] = {
         -1.0f,  1.0f,  0.0f, 1.0f,

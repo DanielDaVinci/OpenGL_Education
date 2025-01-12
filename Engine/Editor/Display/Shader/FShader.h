@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class Shader
+class FShader
 {
 private:
 
@@ -28,7 +28,7 @@ private:
 
 public:
 
-	Shader(const GLchar* vertexPath = nullptr, const GLchar* fragmentPath = nullptr);
+	FShader(const GLchar* vertexPath = nullptr, const GLchar* fragmentPath = nullptr);
 	
 	void setProgram();
 	GLuint getProgram() const;

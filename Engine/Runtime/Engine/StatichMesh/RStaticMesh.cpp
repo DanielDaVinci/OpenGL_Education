@@ -1,6 +1,11 @@
-#include "Mesh.h"
+#include "RStaticMesh.h"
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+#include <sstream>
+
+#include "../Engine/Editor/Display/Shader/FShader.h"
+#include "GL/glew.h"
+
+RStaticMesh::RStaticMesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -9,7 +14,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 	setupMesh();
 }
 
-void Mesh::Draw(Shader shader)
+void RStaticMesh::Draw(FShader shader)
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
@@ -36,7 +41,7 @@ void Mesh::Draw(Shader shader)
     glBindVertexArray(0);
 }
 
-void Mesh::setupMesh()
+void RStaticMesh::setupMesh()
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

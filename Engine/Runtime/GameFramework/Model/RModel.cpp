@@ -1,17 +1,25 @@
-#include "Model.h"
+#include "RModel.h"
 
-Model::Model(string path)
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include "../Engine/Editor/Display/Shader/FShader.h"
+#include "../Engine/Runtime/Engine/StatichMesh/RStaticMesh.h"
+#include "SOIL/SOIL.h"
+
+RModel::RModel(string path)
 {
 	loadModel(path);
 }
 
-void Model::Draw(Shader shader)
+void RModel::Draw(FShader shader)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].Draw(shader);
 }
 
-void Model::loadModel(string path)
+void RModel::loadModel(string path)
 {
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate);
@@ -27,7 +35,7 @@ void Model::loadModel(string path)
 	processNode(scene->mRootNode, scene);
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+void RModel::processNode(aiNode* node, const aiScene* scene)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
@@ -40,7 +48,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 	}
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+RStaticMesh RModel::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
@@ -95,10 +103,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
 
-	return Mesh(vertices, indices, textures);
+	return RStaticMesh(vertices, indices, textures);
 }
 
-vector<Texture> Model::loadMaterialTextures(aiMaterial* material, aiTextureType type, string typeName)
+vector<Texture> RModel::loadMaterialTextures(aiMaterial* material, aiTextureType type, string typeName)
 {
 	vector<Texture> textures;
 	
@@ -133,7 +141,7 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* material, aiTextureType 
 	return textures;
 }
 
-unsigned int Model::TextureFromFile(const char* path, const string& directory, bool gamma)
+unsigned int RModel::TextureFromFile(const char* path, const string& directory, bool gamma)
 {
 	string filename = path;
 	filename = directory + '/' + filename;
