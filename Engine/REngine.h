@@ -42,10 +42,12 @@ protected:
         ~FCallbackWrapper() = delete;
 
         static void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+        static void OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
     };
 
     void SetWindowCallbacks();
-    void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+    void OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) const;
+    void OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) const;
     // ---------------------------------
     
 private:

@@ -8,48 +8,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6e9f803b-0824-4dc2-ac20-d81af2799e3d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Engine/Runtime/Core/Object/RObject.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Engine/Runtime/Core/Object/RObject.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Engine/Runtime/Engine/MeshLibrary.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Engine/Runtime/GameFramework/Scene/RScene.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Engine/Runtime/GameFramework/Scene/RScene.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/imGUI/imgui_demo.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SSRW_OpenGL/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SSRW_OpenGL/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/RContainerWidget/RContainerWidget.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/RContainerWidget/RContainerWidget.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/RootWindow/RRootWindow.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/RootWindow/RRootWindow.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/ViewportWindow/RViewportWindow.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/ViewportWindow/RViewportWindow.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/Widget/RWidget.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/Widget/RWidget.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/Window/Data/FWindowData.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/Window/Data/FWindowData.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/Window/RWindow.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Editor/UI/Widgets/Window/RWindow.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/Runtime/Core/DebugHelper/Check.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SSRW_OpenGL/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SSRW_OpenGL/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/Editor/REditor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Editor/REditor.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/Editor/REditor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Editor/REditor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/REngine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/REngine.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/graphic/Mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/Engine/StatichMesh/RStaticMesh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/graphic/Mesh.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/Engine/StatichMesh/RStaticMesh.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/graphic/Model.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/GameFramework/Model/RModel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/graphic/Model.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/GameFramework/Model/RModel.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/graphic/Shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Editor/Display/Shader/FShader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/graphic/Shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Editor/Display/Shader/FShader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/screen/Frame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Editor/Display/Frame/RFrame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/screen/Frame.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Editor/Display/Frame/RFrame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/shell/FApplication.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/shell/FApplication.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/shell/Window.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/shell/Window.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/REngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/REngine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/Runtime/Core/Object/RObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/Core/Object/RObject.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/Runtime/Core/Object/RObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/Core/Object/RObject.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/objects/Camera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/GameFramework/Camera/RCamera.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/objects/Camera.h" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Runtime/GameFramework/Camera/RCamera.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Project.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Project.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WindowGL.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Launch.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/MainWindow.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/MainWindow.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/imgui.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imconfig.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imconfig.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_draw.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_draw.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_impl_glfw.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_impl_glfw.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_impl_glfw.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_impl_glfw.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_impl_opengl3.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_impl_opengl3.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_impl_opengl3.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_impl_opengl3.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_impl_opengl3_loader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_impl_opengl3_loader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_internal.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_internal.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_tables.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_tables.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imgui_widgets.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imgui_widgets.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imstb_textedit.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imstb_textedit.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/imGUI/imstb_truetype.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/imGUI/imstb_truetype.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +43,17 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/../../../../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.42.34433/include/vector" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Editor/REditor.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Editor/REditor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Editor/UI/Widgets/Widget/RWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Editor/UI/Widgets/Widget/RWidget.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/REngine.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/REngine.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Runtime/EngineWindow/Data/FEngineWindowParameters.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Runtime/EngineWindow/REngineWindow.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Runtime/EngineWindow/REngineWindow.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Runtime/GameFramework/Camera/RCamera.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Engine/Runtime/GameFramework/Model/RModel.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/assimp/Importer.hpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -68,7 +61,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="Toolset" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -163,8 +156,20 @@
       <workItem from="1736621539474" duration="168000" />
       <workItem from="1736621716463" duration="3135000" />
       <workItem from="1736626877838" duration="10737000" />
-      <workItem from="1736639639329" duration="1992000" />
+      <workItem from="1736639639329" duration="3093000" />
+      <workItem from="1736669669783" duration="2808000" />
+      <workItem from="1736712294071" duration="10714000" />
+      <workItem from="1737159581522" duration="3121000" />
     </task>
+    <task id="LOCAL-00001" summary="Complete remake architecture">
+      <option name="closed" value="true" />
+      <created>1736645107824</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1736645107824</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,5 +189,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Complete remake architecture" />
+    <option name="LAST_COMMIT_MESSAGE" value="Complete remake architecture" />
   </component>
 </project>

@@ -7,7 +7,7 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 
-class Camera
+class RCamera
 {
 private:
 	glm::vec3 position;
@@ -18,7 +18,7 @@ private:
 
 	GLuint screenWidth, screenHeight;
 public:
-	Camera(GLuint screenWidth, GLuint screenHeight, GLfloat FOV, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 angle = {0.0f, 0.0f, 0.0f});
+	RCamera(GLuint screenWidth, GLuint screenHeight, GLfloat FOV, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 angle = {0.0f, 0.0f, 0.0f});
 
 	void setPosition(glm::vec3 position);
 	glm::vec3 getPosition();

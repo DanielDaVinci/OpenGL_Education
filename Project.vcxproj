@@ -164,12 +164,93 @@
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
     <ClCompile Include="Engine\Editor\REditor.cpp" />
+    <ClCompile Include="Engine\Editor\UI\Widgets\RContainerWidget\RContainerWidget.cpp" />
+    <ClCompile Include="Engine\Editor\UI\Widgets\RootWindow\RRootWindow.cpp" />
+    <ClCompile Include="Engine\Editor\UI\Widgets\ViewportWindow\RViewportWindow.cpp" />
+    <ClCompile Include="Engine\Editor\UI\Widgets\Widget\RWidget.cpp" />
+    <ClCompile Include="Engine\Editor\UI\Widgets\Window\Data\FWindowData.cpp" />
+    <ClCompile Include="Engine\Editor\UI\Widgets\Window\RWindow.cpp" />
     <ClCompile Include="Engine\REngine.cpp" />
     <ClCompile Include="Engine\Runtime\Core\Object\RObject.cpp" />
     <ClCompile Include="Engine\Runtime\EngineWindow\Data\FEngineWindowParameters.cpp" />
     <ClCompile Include="Engine\Runtime\EngineWindow\REngineWindow.cpp" />
-    <ClCompile Include="Engine\objects\Camera.cpp" />
     <ClCompile Include="Engine\Runtime\Engine\StatichMesh\RStaticMesh.cpp">
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>Debug\</BrowseInformationFile>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>Default</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ModuleDependenciesFile>Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <Optimization>Disabled</Optimization>
+      <ObjectFileName>.\Debug/</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>.\Debug/Project.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <TrackerLogDirectory>Debug\Project.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <BuildStlModules>false</BuildStlModules>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_VC80_UPGRADE=0x0600;_MBCS;</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <OmitFramePointers>false</OmitFramePointers>
+      <AdditionalIncludeDirectories>include/;</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
+    <ClCompile Include="Engine\Runtime\GameFramework\Camera\RCamera.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
@@ -335,13 +416,20 @@
     <ClInclude Include="Engine\Editor\Display\Frame\RFrame.h" />
     <ClInclude Include="Engine\Editor\Display\Shader\FShader.h" />
     <ClInclude Include="Engine\Editor\REditor.h" />
+    <ClInclude Include="Engine\Editor\UI\Widgets\RContainerWidget\RContainerWidget.h" />
+    <ClInclude Include="Engine\Editor\UI\Widgets\RootWindow\RRootWindow.h" />
+    <ClInclude Include="Engine\Editor\UI\Widgets\ViewportWindow\RViewportWindow.h" />
+    <ClInclude Include="Engine\Editor\UI\Widgets\Widget\RWidget.h" />
+    <ClInclude Include="Engine\Editor\UI\Widgets\Window\Data\FWindowData.h" />
+    <ClInclude Include="Engine\Editor\UI\Widgets\Window\RWindow.h" />
     <ClInclude Include="Engine\REngine.h" />
+    <ClInclude Include="Engine\Runtime\Core\DebugHelper\Check.h" />
     <ClInclude Include="Engine\Runtime\Core\Object\RObject.h" />
     <ClInclude Include="Engine\Runtime\EngineWindow\Data\FEngineWindowParameters.h" />
     <ClInclude Include="Engine\Runtime\EngineWindow\REngineWindow.h" />
-    <ClInclude Include="Engine\objects\Camera.h" />
     <ClInclude Include="Engine\Runtime\Engine\MeshLibrary.h" />
     <ClInclude Include="Engine\Runtime\Engine\StatichMesh\RStaticMesh.h" />
+    <ClInclude Include="Engine\Runtime\GameFramework\Camera\RCamera.h" />
     <ClInclude Include="Engine\Runtime\GameFramework\Model\RModel.h" />
     <ClInclude Include="Engine\Runtime\GameFramework\Scene\RScene.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
@@ -383,10 +471,8 @@
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Engine\Editor\UI\" />
-    <Folder Include="Engine\graphic\" />
     <Folder Include="Engine\Programs\" />
-    <Folder Include="Engine\screen\" />
+    <Folder Include="Engine\Runtime\Core\Reflection\" />
     <Folder Include="Engine\Shaders\" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -454,8 +540,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include/;Engine/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BufferSecurityCheck>true</BufferSecurityCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

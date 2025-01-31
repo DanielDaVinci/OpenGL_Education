@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Editor/REditor.h"
+#include "imGUI/imgui_impl_glfw.h"
 #include "Runtime/EngineWindow/REngineWindow.h"
 
 REngine* REngine::FCallbackWrapper::StaticEngine = nullptr;
@@ -54,8 +55,6 @@ void REngine::Init()
     // Engine editor
     Editor = std::make_shared<REditor>();
     Editor->Init(EngineWindow->glfwWindow);
-
-    
 }
 
 void REngine::PostInit()
@@ -74,6 +73,8 @@ void REngine::PreTick()
     PreviousTickTime = CurrentTickTime;
     CurrentTickTime = glfwGetTime();
     DeltaTime = CurrentTickTime - PreviousTickTime;
+
+    Editor->PreTick(DeltaTime);
 }
 
 void REngine::Tick()
@@ -96,8 +97,9 @@ void REngine::Exit()
 
 void REngine::SetWindowCallbacks()
 {
-    REngine::FCallbackWrapper::StaticEngine = this;
+    FCallbackWrapper::StaticEngine = this;
     EngineWindow->SetKeyCallback(&FCallbackWrapper::OnKeyCallback);
+    EngineWindow->SetMouseButtonCallback(&FCallbackWrapper::OnMouseButtonCallback);
 }
 
 void REngine::FCallbackWrapper::OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -105,7 +107,31 @@ void REngine::FCallbackWrapper::OnKeyCallback(GLFWwindow* window, int key, int s
     StaticEngine->OnKeyCallback(window, key, scancode, action, mode);
 }
 
-void REngine::OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void REngine::FCallbackWrapper::OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    
+    StaticEngine->OnMouseButtonCallback(window, button, action, mods);
+}
+
+void REngine::OnKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) const
+{
+    if (action == GLFW_PRESS)
+    {
+        Editor->OnKeyDown(key, scancode, mode);
+    }
+    else if (action == GLFW_RELEASE)
+    {
+        Editor->OnKeyUp(key, scancode, mode);
+    }
+}
+
+void REngine::OnMouseButtonCallback(GLFWwindow* window, int button, int action, int mods) const
+{
+    if (action == GLFW_PRESS)
+    {
+        Editor->OnMouseDown(button, mods);
+    }
+    else if (action == GLFW_RELEASE)
+    {
+        Editor->OnMouseUp(button, mods);
+    }
 }
