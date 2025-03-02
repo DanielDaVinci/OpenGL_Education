@@ -1,0 +1,79 @@
+#include <string.h>
+#include <stdlib.h>
+#include "../metareflect/metareflect.hxx"
+
+CLASS() Point
+{
+    // META_OBJECT
+
+public:
+    PROPERTY()
+    int x;
+
+    PROPERTY()
+    int y;
+
+    PROPERTY()
+    int z;
+
+    // FUNCTION()
+    size_t Hash() const
+    {
+        return x ^ y ^ z;
+    }
+};
+
+
+// CLASS() ColoredPoint
+// {
+//     META_OBJECT
+//
+// public:
+//     PROPERTY(Serialized)
+//     Point point;
+//
+//     PROPERTY(Serialized, Width=24)
+//     union {
+//         int rgb;
+//         struct {
+//             char _;
+//             char b;
+//             char g;
+//             char r;
+//         };
+//     };
+// };
+
+
+// CLASS() NPCObject
+// {
+//     META_OBJECT
+//
+// public:
+//     PROPERTY(Serialized)
+//     Point position;
+//
+//     FUNCTION()
+//     char const *GetName() const noexcept
+//     {
+//         return m_name;
+//     }
+//
+//     FUNCTION()
+//     void SetName(char const *name) noexcept
+//     {
+//         free(m_name);
+//         m_name = _strdup(name);
+//     }
+//
+//     FUNCTION()
+//     bool Serialize(Serializer &serializer) noexcept
+//     {
+//         serializer.SerializeString(m_name, strlen(m_name));
+//         return true;
+//     }
+//
+// private:
+//     char *m_name = nullptr;
+// };
+
