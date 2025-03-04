@@ -6,6 +6,7 @@
 
 #include "../Parser.h"
 
+class FunctionParser;
 class PropertyParser;
 using namespace std;
 using namespace clang;
@@ -20,5 +21,6 @@ public:
 
 private:
     vector<std::shared_ptr<PropertyParser>> Properties;
+    vector<std::shared_ptr<FunctionParser>> Functions;
     
 };

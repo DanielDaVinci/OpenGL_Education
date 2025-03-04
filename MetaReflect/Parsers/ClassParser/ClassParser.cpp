@@ -2,6 +2,7 @@
 #include "metareflect.hxx"
 #include <iostream>
 
+#include "../FunctionParser/FunctionParser.h"
 #include "../PropertyParser/PropertyParser.h"
 
 bool ClassParser::Parse(CXCursor Cursor)
@@ -25,7 +26,8 @@ bool ClassParser::Parse(CXCursor Cursor)
 
 bool ClassParser::CanParse(CXCursor Cursor) const
 {
-    return clang_getCursorKind(Cursor) == CXCursor_ClassDecl && GetAttributeName(Cursor) == ATTRIBUTE_CLASS_NAME;
+    const string AttributeName = GetAttributeName(Cursor);
+    return clang_getCursorKind(Cursor) == CXCursor_ClassDecl && AttributeName.starts_with(ATTRIBUTE_CLASS_NAME);
 }
 
 CXChildVisitResult ClassParser::VisitChildRecursive(CXCursor Cursor, CXCursor Parent, CXClientData ClientData)
@@ -46,6 +48,23 @@ CXChildVisitResult ClassParser::VisitChildRecursive(CXCursor Cursor, CXCursor Pa
             Class->Properties.push_back(Parser);
         }
     }
+    else if (CursorKind == CXCursor_CXXMethod)
+    {
+        const auto Parser = make_shared<FunctionParser>();
+        if (Parser->CanParse(Cursor))
+        {
+            Parser->Parse(Cursor);
+            Class->Functions.push_back(Parser);
+        }
+    }
+
+    // const CXString displayName = clang_getCursorDisplayName(Cursor);
+    // if (std::string(clang_getCString(displayName)) == "Hash()")
+    // {
+    //     cout << "Name: " << clang_getCString(displayName) << endl;
+    //     cout << clang_getCString(clang_getCursorKindSpelling(CursorKind)) << endl;
+    // }
+    // clang_disposeString(displayName);
 
     
     return CXChildVisit_Continue;

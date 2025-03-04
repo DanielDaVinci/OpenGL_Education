@@ -21,9 +21,12 @@
   <ItemGroup>
     <ClCompile Include="metareflect\metareflect.cxx" />
     <ClCompile Include="Parsers\ClassParser\ClassParser.cpp" />
+    <ClCompile Include="Parsers\FunctionParser\FunctionParser.cpp" />
     <ClCompile Include="Parsers\Parser.cpp" />
     <ClCompile Include="Parsers\PropertyParser\PropertyParser.cpp" />
     <ClCompile Include="Reflect.cpp" />
+    <ClCompile Include="tooling\reflectedclass.cpp" />
+    <ClCompile Include="tooling\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="metareflect\metareflect.hxx" />
@@ -31,8 +34,15 @@
     <ClInclude Include="metareflect\metareflect_fundamental.hxx" />
     <ClInclude Include="metareflect\metareflect_templates.hxx" />
     <ClInclude Include="Parsers\ClassParser\ClassParser.h" />
+    <ClInclude Include="Parsers\FunctionParser\FunctionParser.h" />
     <ClInclude Include="Parsers\Parser.h" />
     <ClInclude Include="Parsers\PropertyParser\PropertyParser.h" />
+    <ClInclude Include="tooling\annotations.hpp" />
+    <ClInclude Include="tooling\classfinder.hpp" />
+    <ClInclude Include="tooling\fieldgenerator.hpp" />
+    <ClInclude Include="tooling\functiongenerator.hpp" />
+    <ClInclude Include="tooling\reflectedclass.hpp" />
+    <ClInclude Include="tooling\utils.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -172,6 +182,7 @@
       <AdditionalIncludeDirectories>include/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4146</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

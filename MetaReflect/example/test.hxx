@@ -16,7 +16,7 @@ public:
     PROPERTY()
     int z;
 
-    // FUNCTION()
+    FUNCTION()
     size_t Hash() const
     {
         return x ^ y ^ z;
@@ -45,35 +45,35 @@ public:
 // };
 
 
-// CLASS() NPCObject
-// {
-//     META_OBJECT
-//
-// public:
-//     PROPERTY(Serialized)
-//     Point position;
-//
-//     FUNCTION()
-//     char const *GetName() const noexcept
-//     {
-//         return m_name;
-//     }
-//
-//     FUNCTION()
-//     void SetName(char const *name) noexcept
-//     {
-//         free(m_name);
-//         m_name = _strdup(name);
-//     }
-//
-//     FUNCTION()
-//     bool Serialize(Serializer &serializer) noexcept
-//     {
-//         serializer.SerializeString(m_name, strlen(m_name));
-//         return true;
-//     }
-//
-// private:
-//     char *m_name = nullptr;
-// };
+CLASS() NPCObject
+{
+    // META_OBJECT
+
+public:
+    PROPERTY()
+    Point position;
+
+    FUNCTION()
+    char const *GetName() const noexcept
+    {
+        return m_name;
+    }
+
+    FUNCTION()
+    void SetName(char const *name) noexcept
+    {
+        free(m_name);
+        m_name = _strdup(name);
+    }
+
+    // FUNCTION()
+    // bool Serialize(Serializer &serializer) noexcept
+    // {
+    //     serializer.SerializeString(m_name, strlen(m_name));
+    //     return true;
+    // }
+
+private:
+    char *m_name = nullptr;
+};
 

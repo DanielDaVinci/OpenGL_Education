@@ -28,6 +28,6 @@ bool PropertyParser::Parse(CXCursor Cursor)
 
 bool PropertyParser::CanParse(CXCursor Cursor) const
 {
-    auto AttributeName = GetAttributeName(Cursor);
-    return clang_getCursorKind(Cursor) == CXCursor_FieldDecl && AttributeName == ATTRIBUTE_PROPERTY_NAME;
+    const string AttributeName = GetAttributeName(Cursor);
+    return clang_getCursorKind(Cursor) == CXCursor_FieldDecl && AttributeName.starts_with(ATTRIBUTE_PROPERTY_NAME);
 }
